@@ -1,18 +1,16 @@
-package com.paymentprocessor.payment;
+package com.paymentprocessor.fraud;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.kafka.annotation.EnableKafka;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication(scanBasePackages = {
-        "com.paymentprocessor.payment",
+        "com.paymentprocessor.fraud",
         "com.paymentprocessor.common"
 })
 @EnableKafka
-@EnableTransactionManagement
-public class PaymentServiceApplication {
+public class FraudDetectionServiceApplication {
     public static void main(String[] args) {
-        SpringApplication.run(PaymentServiceApplication.class, args);
+        SpringApplication.run(FraudDetectionServiceApplication.class, args);
     }
 }
