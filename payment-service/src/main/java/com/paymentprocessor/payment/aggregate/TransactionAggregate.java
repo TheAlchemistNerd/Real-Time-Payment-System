@@ -19,33 +19,34 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Getter
 @Slf4j
 public class TransactionAggregate {
-    @Getter
+
     private String transactionId;
-    @Getter
+
     private String userId;
-    @Getter
+
     private BigDecimal amount;
-    @Getter
+
     private Currency currency;
-    @Getter
+
     private PaymentMethod paymentMethod;
-    @Getter
+
     private String description;
-    @Getter
+
     private TransactionStatus status;
-    @Getter
+
     private LocalDateTime createdAt;
-    @Getter
+
     private LocalDateTime completedAt;
-    @Getter
+
     private double riskScore;
-    @Getter
+
     private String fraudReason;
-    @Getter
+
     private String paymentGatewayTransactionId;
-    @Getter
+
     private long version;
 
     private final List<BaseEvent> uncommittedEvents = new ArrayList<>();
@@ -225,6 +226,7 @@ public class TransactionAggregate {
     }
 
     private String processWithPaymentGateway(ProcessPaymentCommand command) {
+        // Simulate Payment Gateway
         try {
             Thread.sleep(100); // Simulate network call
 
