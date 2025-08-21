@@ -9,7 +9,7 @@ This report covers a logical review of the `payment-service` and `transaction-se
 ### `payment-service`
 *   **Overall Architecture**: The current architecture (`EventListener` -> `CommandService` -> `SagaOrchestrator`) is logically sound and robust. It provides a clear separation of concerns.
 *   **`TransactionCommandService`**: The logic is correct. It properly handles commands, updates aggregates, and uses the `TransactionSynchronizationManager` to publish events *after* the database commit. This correctly solves the race condition we discussed. The integration of metrics and resilience patterns (`@Bulkhead`, `@Retry`) is excellent.
-*   **`ModernTransactionSagaOrchestrator`**: The logic is correct for its role as a pure orchestrator. It listens for events mid-workflow (e.g., `FraudCheckCompletedEvent`) and correctly dispatches new commands to the `TransactionCommandService`. It no longer contains business logic, which is a significant improvement.
+*   **`TransactionSagaOrchestrator`**: The logic is correct for its role as a pure orchestrator. It listens for events mid-workflow (e.g., `FraudCheckCompletedEvent`) and correctly dispatches new commands to the `TransactionCommandService`. It no longer contains business logic, which is a significant improvement.
 *   **`TransactionEventListener`**: This component is logically correct. It properly serves as the entry point, converting the initial `TransactionCreatedEvent` into a `CreateTransactionCommand`.
 
 ### `transaction-service`
@@ -58,7 +58,7 @@ I have scanned the entire project for comments indicating non-production-ready c
 
 ### 3. Implementing a Sophisticated Retry Strategy for Payment Failures
 
-*   **Location**: `ModernTransactionSagaOrchestrator.java` (in a previous version, but the logic is still relevant).
+*   **Location**: `TransactionSagaOrchestrator.java` (in a previous version, but the logic is still relevant).
 *   **Comment**: `// TODO: Implement sophisticated retry strategy`
 *   **Problem**: When a payment fails but is marked as `retryable`, the system currently does nothing. A production system should automatically retry these payments after a delay.
 *   **Implementation Plan**:

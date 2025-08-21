@@ -50,7 +50,8 @@ public class TransactionCommandService {
             metrics.recordCommandSuccess("CreateTransactionCommand");
         } catch (Exception e) {
             metrics.recordCommandFailure("CreateTransactionCommand");
-            log.error("Failed to process CreateTransactionCommand for transaction: {}", command.transactionId(), e);
+            log.error("Failed to process CreateTransactionCommand for transaction: {}",
+                    command.transactionId(), e);
             throw e;
         } finally {
             sample.stop(metrics.getCommandProcessingTimer());

@@ -30,6 +30,10 @@ public class TransactionEventListener {
                     event.description()
             );
             commandService.handle(command);
+
+            log.info("Successfully processed TransactionCreatedEvent for transaction: {}",
+                    event.transactionId());
+
         } catch (Exception e) {
             log.error("Failed to process TransactionCreatedEvent for transaction: {}",
                     event.transactionId(), e);

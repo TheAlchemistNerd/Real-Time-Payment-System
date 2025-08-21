@@ -1,6 +1,6 @@
 # Is this Payment Processing System Practical?
 
-That is the most important question you could ask. It moves from "how the code works" to "is this the right solution for the problem?"
+That is the most important question which moves from "how the code works" to "is this the right solution for the problem?"
 
 The answer is: **This system is practical, but it is not a simple connector. It is a sophisticated payment platform.**
 
