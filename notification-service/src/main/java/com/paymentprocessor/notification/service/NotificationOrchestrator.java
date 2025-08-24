@@ -73,7 +73,7 @@ public class NotificationOrchestrator {
                     success ? "Notification sent successfully" : "Notification failed"
             );
 
-            KafkaTemplate.send("notification-sent", message.getTransactionId(), event)
+            kafkaTemplate.send("notification-sent", message.getTransactionId(), event)
                     .whenComplete((result, failure) -> {
                         if (failure != null) {
                             log.error("Failed to publish NotificationSentEvent for transaction: {}",
