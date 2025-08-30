@@ -9,14 +9,14 @@ The architecture is built around the principles of Domain-Driven Design (DDD), C
 ## System Architecture
 
 The system is composed of several loosely coupled microservices that communicate asynchronously via Apache Kafka. This event-driven approach ensures high resilience and scalability, as services can operate independently and are not blocked by the availability of others.
-![System Architecture](docs/diagrams/system_architecture.png)                                                              │
+![System Architecture](docs/images/system_architecture.png)                                                              │
 
 ### Core Concepts
 
 *   **Event Sourcing**: The `payment-service` uses an event sourcing pattern to persist the state of a transaction. Instead of storing the current state, we store an immutable sequence of events that have occurred. This provides a full audit log and allows the state of an aggregate to be reconstructed at any point in time.
 *   **CQRS (Command Query Responsibility Segregation)**: The system separates the responsibility of handling commands (write operations) from handling queries (read operations). This allows for independent scaling and optimization of each path.
 *   **Saga Pattern**: The complex, multi-step process of a payment is orchestrated using a Saga. The `TransactionSagaOrchestrator` listens for events and dispatches new commands, ensuring that the entire workflow is completed or properly compensated in case of failure. 
-     ![Payment Saga Flow](docs/diagrams/payment_saga_flow.png)                                                                  │ │
+     ![Payment Saga Flow](docs/images/payment_saga_flow.png)                                                                  │ │
 *   **Resilience and Fault Tolerance**: The services are built with resilience in mind, using patterns like Circuit Breaker, Retry, and Bulkhead (via Resilience4j) to prevent cascading failures and ensure graceful degradation.
 
 ### Further Reading on Architectural Decisions

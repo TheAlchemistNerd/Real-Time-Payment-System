@@ -1,6 +1,6 @@
 # Comprehensive Microservice Testing Plan
 
-![Testing Pyramid](docs/diagrams/testing_pyramid.png)
+![Testing Pyramid](docs/images/testing_pyramid.png)
 
 ## 1. Introduction: The Imperative of a Test-First Approach
 
