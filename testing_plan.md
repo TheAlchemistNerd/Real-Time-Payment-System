@@ -1,7 +1,5 @@
 # Comprehensive Microservice Testing Plan
 
-![Testing Pyramid](docs/images/testing_pyramid.png)
-
 ## 1. Introduction: The Imperative of a Test-First Approach
 
 Before embarking on significant architectural changes, such as the integration of third-party services like SendGrid for notifications and various payment gateways (Stripe, PayPal, etc.), it is not just recommended but **essential** to establish a robust, automated testing suite for the existing application. Attempting to build new functionality on an untested foundation is a recipe for instability, cascading failures, and intractable debugging sessions.
@@ -23,7 +21,7 @@ This document outlines a detailed, service-by-service testing plan designed to c
 ### The Testing Pyramid
 
 Our strategy is guided by the Testing Pyramid, which advocates for a healthy balance of different types of tests:
-
+![Testing Pyramid](docs/images/testing_pyramid.png)
 -   **Unit Tests (Base of the Pyramid)**: These form the largest part of our test suite. They are fast, isolated, and verify a single "unit" of code (e.g., a class or method) without external dependencies like databases, message brokers, or network calls.
 -   **Integration Tests (Middle of the Pyramid)**: Fewer in number, these tests verify the collaboration of several components within a *single service*. For example, they test the flow from a controller to a service, to a repository, and its interaction with real infrastructure like a database or Kafka, often managed by Testcontainers.
 -   **End-to-End (E2E) Tests (Top of the Pyramid)**: The fewest tests, they simulate a full user journey across multiple services to verify the entire system works as expected. This plan focuses on building the critical Unit and Integration test layers.
