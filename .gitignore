@@ -21,6 +21,9 @@ buildNumber.properties
 *.log
 log/
 logs/
+# docs
+docs/diagrams
+docs/graphviz_env
 
 # Package files
 *.jar
