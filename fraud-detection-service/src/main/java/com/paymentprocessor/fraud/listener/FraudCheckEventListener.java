@@ -14,7 +14,6 @@ public class FraudCheckEventListener {
 
     private final FraudDetectionService fraudDetectionService;
 
-    @Autowired
     public FraudCheckEventListener(FraudDetectionService fraudDetectionService) {
         this.fraudDetectionService = fraudDetectionService;
     }

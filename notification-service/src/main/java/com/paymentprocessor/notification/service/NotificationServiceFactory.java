@@ -11,7 +11,6 @@ public class NotificationServiceFactory {
     private final SMSNotificationService smsService;
     private final WebhookNotificationService webhookervice;
 
-    @Autowired
     public NotificationServiceFactory(EmailNotificationService emailService, SMSNotificationService smsService, WebhookNotificationService webhookService) {
         this.emailService = emailService;
         this.smsService = smsService;

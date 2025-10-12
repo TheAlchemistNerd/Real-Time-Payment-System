@@ -28,7 +28,6 @@ public class TransactionController {
     private final TransactionService transactionService;
     private final CorrelationIdGenerator correlationIdGenerator;
 
-    @Autowired
     public TransactionController(TransactionService transactionService,
                                  CorrelationIdGenerator correlationIdGenerator) {
         this.transactionService = transactionService;

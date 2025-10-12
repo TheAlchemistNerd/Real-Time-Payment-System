@@ -25,7 +25,6 @@ public class WebhookNotificationService implements NotificationService {
 
     private final WebClient webClient;
 
-    @Autowired
     public WebhookNotificationService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

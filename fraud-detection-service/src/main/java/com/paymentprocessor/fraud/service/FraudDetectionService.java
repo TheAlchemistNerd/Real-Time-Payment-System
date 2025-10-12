@@ -27,7 +27,6 @@ public class FraudDetectionService {
     private final Counter fraudDetectedCounter;
     private final Counter fraudCheckPassedCounter;
 
-    @Autowired
     public FraudDetectionService(ExternalFraudApiClient fraudApiClient,
                                  KafkaTemplate<String, Object> kafkaTemplate,
                                  @Value("${fraud.threshold:0.7}") double fraudThreshold,

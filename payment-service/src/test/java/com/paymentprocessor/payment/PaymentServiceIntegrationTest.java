@@ -22,8 +22,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 public class PaymentServiceIntegrationTest {
 
+    private final TransactionAggregateRepository  repository;
+
     @Autowired
-    private TransactionAggregateRepository  repository;
+    public PaymentServiceIntegrationTest(TransactionAggregateRepository repository) {
+        this.repository = repository;
+    }
 
     @Test
     public void shouldCreateAndPersistTransaction() {

@@ -20,7 +20,6 @@ public class NotificationOrchestrator {
     private Counter notificationSuccessCounter;
     private Counter notificationFailureCounter;
 
-    @Autowired
     public NotificationOrchestrator(NotificationServiceFactory serviceFactory,
                                     KafkaTemplate<String, Object> kafkaTemplate,
                                     MeterRegistry meterRegistry) {

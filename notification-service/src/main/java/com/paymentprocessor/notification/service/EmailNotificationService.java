@@ -19,7 +19,6 @@ public class EmailNotificationService implements NotificationService {
 
     private final JavaMailSender mailSender;
 
-    @Autowired
     public EmailNotificationService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
