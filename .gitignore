@@ -44,3 +44,6 @@ docs/graphviz_env
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+git_status_and_diff.txt
+.vscode/
