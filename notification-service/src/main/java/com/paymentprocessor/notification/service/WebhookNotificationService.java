@@ -6,7 +6,6 @@ import io.github.resilience4j.retry.annotation.Retry;
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
@@ -32,7 +31,7 @@ public class WebhookNotificationService implements NotificationService {
     }
 
     @Override
-    @Async("NotificationExecutor")
+    @Async
     @Retry(name = "webhookNotification")
     @Timed(value = "notification.webhook.send.time", description = "Time taken to send webhook notifications")
     @Counted(value = "notification.webhook.send.count", description = "Number of webhook notifications sent")

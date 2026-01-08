@@ -1,7 +1,6 @@
 package com.paymentprocessor.payment.listener;
 
-import com.paymentprocessor.common.event.TransactionCreatedEvent;
-import com.paymentprocessor.payment.command.CreateTransactionCommand;
+import com.paymentprocessor.common.command.CreateTransactionCommand;
 import com.paymentprocessor.payment.service.TransactionCommandService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -17,26 +16,18 @@ public class TransactionEventListener {
         this.commandService = commandService;
     }
 
-    @KafkaListener(topics = "transaction-created", groupId = "payment-service")
-    public void handleTransactionCreated(TransactionCreatedEvent event) {
-        log.info("Received TransactionCreatedEvent for transaction: {}", event.transactionId());
+    @KafkaListener(topics = "create-transaction", groupId = "payment-service")
+    public void handleCreateTransaction(CreateTransactionCommand command) {
+        log.info("Received CreateTransactionCommand for transaction: {}", command.transactionId());
         try {
-            var command = new CreateTransactionCommand(
-                    event.transactionId(),
-                    event.userId(),
-                    event.amount(),
-                    event.currency(),
-                    event.paymentMethod(),
-                    event.description()
-            );
             commandService.handle(command);
 
-            log.info("Successfully processed TransactionCreatedEvent for transaction: {}",
-                    event.transactionId());
+            log.info("Successfully processed CreateTransactionCommand for transaction: {}",
+                    command.transactionId());
 
         } catch (Exception e) {
-            log.error("Failed to process TransactionCreatedEvent for transaction: {}",
-                    event.transactionId(), e);
+            log.error("Failed to process CreateTransactionCommand for transaction: {}",
+                    command.transactionId(), e);
             throw e; // Allow Kafka's retry mechanism to handle it
         }
     }

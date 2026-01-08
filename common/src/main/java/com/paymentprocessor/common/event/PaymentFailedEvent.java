@@ -1,5 +1,7 @@
 package com.paymentprocessor.common.event;
 
+import com.paymentprocessor.common.model.NotificationType;
+
 import java.time.LocalDateTime;
 
 public record PaymentFailedEvent(
@@ -8,7 +10,9 @@ public record PaymentFailedEvent(
         LocalDateTime timestamp,
         String reason,
         String errorCode,
-        boolean retryable
+        boolean retryable,
+        NotificationType notificationType,
+        String webhookUrl
 ) implements BaseEvent {
 
     public PaymentFailedEvent {
@@ -16,9 +20,9 @@ public record PaymentFailedEvent(
         timestamp = timestamp != null ? timestamp : LocalDateTime.now();
     }
 
-    public PaymentFailedEvent(String transactionId, String reason, String errorCode, boolean retryable) {
+    public PaymentFailedEvent(String transactionId, String reason, String errorCode, boolean retryable, NotificationType notificationType, String webhookUrl) {
         this(BaseEvent.generateEventId(), transactionId, LocalDateTime.now(),
-                reason, errorCode, retryable);
+                reason, errorCode, retryable, notificationType, webhookUrl);
     }
 
     @Override

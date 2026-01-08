@@ -2,9 +2,9 @@ package com.paymentprocessor.payment.service;
 
 import com.paymentprocessor.common.event.BaseEvent;
 import com.paymentprocessor.payment.aggregate.TransactionAggregate;
-import com.paymentprocessor.payment.command.CreateTransactionCommand;
-import com.paymentprocessor.payment.command.ProcessFraudCheckCommand;
-import com.paymentprocessor.payment.command.ProcessPaymentCommand;
+import com.paymentprocessor.common.command.CreateTransactionCommand;
+import com.paymentprocessor.common.command.ProcessFraudCheckCommand;
+import com.paymentprocessor.common.command.ProcessPaymentCommand;
 import com.paymentprocessor.payment.metrics.PaymentMetrics;
 import com.paymentprocessor.payment.publisher.EventPublisher;
 import com.paymentprocessor.payment.repository.TransactionAggregateRepository;
@@ -113,12 +113,23 @@ public class TransactionCommandService {
                             command.paymentGateway()
                         );
                         aggregate.apply(processedEvent);
+                        var transactionCompletedEvent = new com.paymentprocessor.common.event.TransactionCompletedEvent(
+                                command.transactionId(),
+                                com.paymentprocessor.common.model.TransactionStatus.COMPLETED,
+                                command.amount(),
+                                aggregate.getUserId(),
+                                aggregate.getNotificationType(),
+                                aggregate.getWebhookUrl()
+                        );
+                        aggregate.apply(transactionCompletedEvent);
                     } else {
                         var failedEvent = new com.paymentprocessor.common.event.PaymentFailedEvent(
                             command.transactionId(),
                             response.message(),
                             "PAYMENT_GATEWAY_ERROR",
-                            true // retryable
+                            true, // retryable
+                            aggregate.getNotificationType(),
+                            aggregate.getWebhookUrl()
                         );
                         aggregate.apply(failedEvent);
                     }
@@ -131,7 +142,9 @@ public class TransactionCommandService {
                         command.transactionId(),
                         ex.getMessage(),
                         "PAYMENT_GATEWAY_ERROR",
-                        true // retryable
+                        true, // retryable
+                        aggregate.getNotificationType(),
+                        aggregate.getWebhookUrl()
                     );
                     aggregate.apply(failedEvent);
                     repository.save(aggregate);

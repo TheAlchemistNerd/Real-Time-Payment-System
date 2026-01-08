@@ -116,6 +116,21 @@ The `PaymentGatewayFactory` is a simple but powerful component responsible for s
 
 This enables dynamic routing, which could be expanded to include logic based on currency, region, or transaction amount.
 
+### Design Philosophy: Commands vs. Events and the Single Source of Truth
+
+A critical architectural principle in this system is the clear distinction between **Commands** and **Events**, which is fundamental to maintaining a single source of truth.
+
+-   A **Command** is a request to perform an action (e.g., "Create a transaction"). It represents an *intent* and can be validated, accepted, or rejected.
+-   An **Event** is a statement of fact that something has already happened (e.g., "Transaction was created"). It is immutable and represents a historical fact.
+
+The `TransactionAggregate` is the sole authority for a transaction's state. Therefore, it must be the **only** component that creates the events that define its lifecycle.
+
+For example, the `transaction-service` acts as the entry point for new transactions. It does not, however, publish a `TransactionCreatedEvent`. Instead, it issues a `CreateTransactionCommand`. The `payment-service` listens for this command, and its `TransactionAggregate` validates it. Only after successful validation does the aggregate create and apply the `TransactionCreatedEvent`.
+
+This approach ensures transactional consistency and robustness:
+-   **Single Source of Truth**: The aggregate's event stream is the definitive record of what happened. There is no ambiguity about the state of a transaction.
+-   **Resilience**: If the `payment-service` is temporarily unavailable, the `CreateTransactionCommand` can be held for processing. No "false" `TransactionCreatedEvent` is published, preventing data inconsistency across the system. The system doesn't record a transaction as "created" until the component that actually *owns* the transaction lifecycle confirms it.
+
 ### The End-to-End Payment Flow
 
 Here is a step-by-step breakdown of what happens when a `ProcessPaymentCommand` is handled:

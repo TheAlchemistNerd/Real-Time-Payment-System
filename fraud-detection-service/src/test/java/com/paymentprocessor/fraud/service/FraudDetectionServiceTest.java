@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
 
+import java.math.BigDecimal;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -50,10 +51,21 @@ class FraudDetectionServiceTest {
     @Test
     void checkFraud_shouldRetryWithJitter_whenApiFails() {
         // Given
-        FraudCheckRequestedEvent event = new FraudCheckRequestedEvent("tx-123", "user-456", 100.0, "127.0.0.1", "test-agent");
+        FraudCheckRequestedEvent event = mock(FraudCheckRequestedEvent.class);
+        when(event.transactionId()).thenReturn("tx-123");
+        when(event.userId()).thenReturn("user-456");
+        when(event.amount()).thenReturn(BigDecimal.valueOf(100.0);
+        when(event.ipAddress()).thenReturn("127.0.0.1");
+        when(event.userAgent()).thenReturn("test-agent");
         when(fraudApiClient.checkFraud(any()))
                 .thenReturn(CompletableFuture.failedFuture(new ExternalServiceException("FRAUDAPI", "API is down", null)));
-
+                public record FraudCheckRequestedEvent(
+                    String transactionId,
+                    String userId,
+                    double amount,
+                    String ipAddress,
+                    String userAgent
+                ) {}
         // When
         fraudDetectionService.checkFraud(event);
 

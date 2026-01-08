@@ -2,6 +2,7 @@ package com.paymentprocessor.fraud.config;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.retry.RetryConfig;
+import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,13 +22,11 @@ public class ResilienceConfig {
                 .permittedNumberOfCallsInHalfOpenState(3)
                 .build();
     }
-
     @Bean
     public RetryConfig fraudApiRetryConfig() {
         return RetryConfig.custom()
                 .maxAttempts(3)
-                .waitDuration(Duration.ofMillis(500))
-                .exponentialBackoffWithJitter(Duration.ofMillis(500), 2.0, 0.2)
+                .intervalFunction(IntervalFunction.ofExponentialRandomBackoff(500, 2.0, 0.2))
                 .build();
     }
 

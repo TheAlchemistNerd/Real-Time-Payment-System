@@ -3,7 +3,7 @@ package com.paymentprocessor.payment.saga;
 import com.paymentprocessor.common.event.FraudCheckCompletedEvent;
 import com.paymentprocessor.common.event.PaymentFailedEvent;
 import com.paymentprocessor.common.event.PaymentProcessedEvent;
-import com.paymentprocessor.payment.command.ProcessFraudCheckCommand;
+import com.paymentprocessor.common.command.ProcessFraudCheckCommand;
 import com.paymentprocessor.payment.service.TransactionCommandService;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;

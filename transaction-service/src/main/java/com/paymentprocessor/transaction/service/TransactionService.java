@@ -1,6 +1,6 @@
 package com.paymentprocessor.transaction.service;
 
-import com.paymentprocessor.common.event.TransactionCreatedEvent;
+import com.paymentprocessor.common.command.CreateTransactionCommand;
 import com.paymentprocessor.common.exception.InvalidTransactionException;
 import com.paymentprocessor.common.util.TransactionIdGenerator;
 import com.paymentprocessor.transaction.dto.CreateTransactionRequest;
@@ -19,7 +19,7 @@ import java.util.Objects;
 @Service
 public class TransactionService {
 
-    private static final String TRANSACTION_CREATED_TOPIC = "transaction-created";
+    private static final String CREATE_TRANSACTION_TOPIC = "create-transaction";
     private static final BigDecimal MAX_TRANSACTION_AMOUNT = new BigDecimal("999999.99");
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
@@ -50,17 +50,18 @@ public class TransactionService {
             // Generate unique transaction ID
             var transactionId = transactionIdGenerator.generateTransactionId();
 
-            // Create and publish transaction created event
-            var event = new TransactionCreatedEvent(
+            // Create and publish transaction created command
+            var command = new CreateTransactionCommand(
                     transactionId,
                     request.userId(),
                     request.amount(),
                     request.currency(),
                     request.paymentMethod(),
-                    request.description()
+                    request.description(),
+                    request.webhookUrl()
             );
 
-            publishTransactionCreatedEvent(transactionId, event, correlationId);
+            publishCreateTransactionCommand(transactionId, command, correlationId);
 
             // Increment success counter
             transactionCreatedCounter.increment();
@@ -105,24 +106,24 @@ public class TransactionService {
         }
     }
 
-    private void publishTransactionCreatedEvent(String transactionId, TransactionCreatedEvent event,
+    private void publishCreateTransactionCommand(String transactionId, CreateTransactionCommand command,
                                                 String correlationId) {
         try {
-            log.info("Publishing TransactionCreatedEvent for transaction: {}", transactionId);
+            log.info("Publishing CreateTransactionCommand for transaction: {}", transactionId);
 
-            kafkaTemplate.send(TRANSACTION_CREATED_TOPIC, transactionId, event)
+            kafkaTemplate.send(CREATE_TRANSACTION_TOPIC, transactionId, command)
                     .whenComplete((result, failure) -> {
                         if (failure != null) {
-                            log.error("Failed to publish TransactionCreatedEvent for transaction: {}",
+                            log.error("Failed to publish CreateTransactionCommand for transaction: {}",
                                     transactionId, failure);
                         } else {
-                            log.info("Successfully published TransactionCreatedEvent for transaction: {}",
+                            log.info("Successfully published CreateTransactionCommand for transaction: {}",
                                     transactionId);
                         }
                     });
 
         } catch (Exception e) {
-            log.error("Error publishing TransactionCreatedEvent for transaction: {}", transactionId, e);
+            log.error("Error publishing CreateTransactionCommand for transaction: {}", transactionId, e);
             throw new InvalidTransactionException("Failed to initiate transaction processing", e);
         }
     }

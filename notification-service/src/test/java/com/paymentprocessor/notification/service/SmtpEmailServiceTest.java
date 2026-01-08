@@ -2,16 +2,14 @@ package com.paymentprocessor.notification.service;
 
 import com.paymentprocessor.common.model.NotificationType;
 import com.paymentprocessor.common.model.TransactionStatus;
+import java.math.BigDecimal;    
 import com.paymentprocessor.notification.model.NotificationMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import java.math.BigDecimal;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -35,7 +33,8 @@ class SmtpEmailServiceTest {
 
     @Test
     void testSendNotification() throws ExecutionException, InterruptedException {
-        NotificationMessage message = new NotificationMessage("123", "user1", NotificationType.EMAIL, "test@example.com", "Test Subject", "Test message", TransactionStatus.COMPLETED, BigDecimal.TEN);
+        NotificationMessage message = new NotificationMessage("123", 
+        "user1", NotificationType.EMAIL, "test@example.com", "Test Subject", "Test message", TransactionStatus.COMPLETED, BigDecimal.TEN);
 
         //doNothing().when(mailSender).send(new SimpleMailMessage());
 

@@ -79,7 +79,8 @@ class NotificationOrchestratorTest {
 
     @Test
     void testSendNotification_Exception() {
-        NotificationMessage message = new NotificationMessage("123", "user1", NotificationType.EMAIL, "test@example.com", "Test Subject", "Test message", TransactionStatus.COMPLETED, BigDecimal.TEN);
+        NotificationMessage message = new NotificationMessage("123", 
+                                                            "user1", NotificationType.EMAIL, "test@example.com", "Test Subject", "Test message", TransactionStatus.COMPLETED, BigDecimal.TEN);
         when(serviceFactory.getNotificationService(NotificationType.EMAIL)).thenReturn(notificationService);
         when(notificationService.sendNotification(message)).thenReturn(CompletableFuture.failedFuture(new RuntimeException("Test exception")));
         when(kafkaTemplate.send(anyString(), anyString(), any(NotificationSentEvent.class))).thenReturn(CompletableFuture.completedFuture(null));

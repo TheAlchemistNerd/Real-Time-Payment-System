@@ -1,30 +1,25 @@
-package com.paymentprocessor.payment.command;
+package com.paymentprocessor.common.command;
 
-import com.paymentprocessor.common.model.Currency;
-import com.paymentprocessor.common.model.PaymentMethod;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 
-public record CreateTransactionCommand(
+public record ProcessPaymentCommand(
         @NotNull String transactionId,
-        @NotNull String userId,
         @NotNull @Positive BigDecimal amount,
-        @NotNull Currency currency,
-        @NotNull PaymentMethod paymentMethod,
-        String description
+        @NotNull String paymentGateway
 ) implements BaseCommand {
 
-    public CreateTransactionCommand {
+    public ProcessPaymentCommand {
         if (transactionId == null || transactionId.isBlank()) {
             throw new IllegalArgumentException("Transaction ID cannot be null or blank");
         }
-        if (userId == null || userId.isBlank()) {
-            throw new IllegalArgumentException("User ID cannot be null or blank");
-        }
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount must be positive");
+        }
+        if (paymentGateway == null || paymentGateway.isBlank()) {
+            throw new IllegalArgumentException("Payment gateway cannot be null or blank");
         }
     }
 }

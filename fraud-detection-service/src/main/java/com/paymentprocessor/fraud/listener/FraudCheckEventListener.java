@@ -3,7 +3,6 @@ package com.paymentprocessor.fraud.listener;
 import com.paymentprocessor.common.event.FraudCheckRequestedEvent;
 import com.paymentprocessor.fraud.service.FraudDetectionService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;

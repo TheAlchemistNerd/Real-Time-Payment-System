@@ -14,7 +14,8 @@ public record TransactionCreatedEvent(
         BigDecimal amount,
         Currency currency,
         PaymentMethod paymentMethod,
-        String description
+        String description,
+        String webhookUrl
 ) implements BaseEvent {
 
     public TransactionCreatedEvent {
@@ -24,9 +25,9 @@ public record TransactionCreatedEvent(
     }
 
     public TransactionCreatedEvent(String transactionId, String userId, BigDecimal amount,
-                                   Currency currency, PaymentMethod paymentMethod, String description) {
+                                   Currency currency, PaymentMethod paymentMethod, String description, String webhookUrl) {
         this(BaseEvent.generateEventId(), transactionId, LocalDateTime.now(),
-                userId, amount, currency, paymentMethod, description);
+                userId, amount, currency, paymentMethod, description, webhookUrl);
     }
 
     @Override

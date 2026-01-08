@@ -2,13 +2,12 @@ package com.paymentprocessor.payment.aggregate;
 
 import com.paymentprocessor.common.event.*;
 import com.paymentprocessor.common.exception.InvalidTransactionException;
-import com.paymentprocessor.common.exception.PaymentProcessingFailedException;
 import com.paymentprocessor.common.model.Currency;
 import com.paymentprocessor.common.model.PaymentMethod;
 import com.paymentprocessor.common.model.TransactionStatus;
-import com.paymentprocessor.payment.command.CreateTransactionCommand;
-import com.paymentprocessor.payment.command.ProcessFraudCheckCommand;
-import com.paymentprocessor.payment.command.ProcessPaymentCommand;
+import com.paymentprocessor.common.command.CreateTransactionCommand;
+import com.paymentprocessor.common.command.ProcessFraudCheckCommand;
+import com.paymentprocessor.common.command.ProcessPaymentCommand;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,7 +16,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Getter
 @Slf4j
@@ -47,6 +45,8 @@ public class TransactionAggregate {
 
     private String paymentGatewayTransactionId;
 
+    private String webhookUrl;
+
     private long version;
 
     private final List<BaseEvent> uncommittedEvents = new ArrayList<>();
@@ -73,7 +73,8 @@ public class TransactionAggregate {
                 command.amount(),
                 command.currency(),
                 command.paymentMethod(),
-                command.description()
+                command.description(),
+                command.webhookUrl()
         );
         apply(event);
         log.info("Transaction created successfully: {}",
@@ -121,6 +122,7 @@ public class TransactionAggregate {
         this.currency = event.currency();
         this.paymentMethod = event.paymentMethod();
         this.description = event.description();
+        this.webhookUrl = event.webhookUrl();
         this.status = TransactionStatus.PENDING;
         this.createdAt = event.timestamp();
         this.version++;

@@ -1,4 +1,4 @@
-package com.paymentprocessor.payment.command;
+package com.paymentprocessor.common.command;
 
 import jakarta.validation.constraints.NotNull;
 

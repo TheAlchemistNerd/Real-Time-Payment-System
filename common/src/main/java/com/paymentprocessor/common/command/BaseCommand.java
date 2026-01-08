@@ -1,4 +1,4 @@
-package com.paymentprocessor.payment.command;
+package com.paymentprocessor.common.command;
 
 public sealed interface BaseCommand permits
         CreateTransactionCommand,

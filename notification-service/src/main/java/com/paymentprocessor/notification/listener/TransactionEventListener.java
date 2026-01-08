@@ -112,11 +112,15 @@ public class TransactionEventListener {
                 event.amount() != null ? "$" + event.amount() : "N/A"
         );
 
+        NotificationType notificationType = event.notificationType() != null ? event.notificationType() : NotificationType.EMAIL;
+        String recipient = NotificationType.WEBHOOK.equals(notificationType) ? event.webhookUrl() : getUserEmail(event.userId());
+
+
         return new NotificationMessage(
                 event.transactionId(),
                 event.userId(),
-                NotificationType.EMAIL, // Default to email
-                getUserEmail(event.userId()), // Mock method to get user email
+                notificationType,
+                recipient,
                 subject,
                 content,
                 event.finalStatus(),
@@ -162,11 +166,15 @@ public class TransactionEventListener {
                 event.errorCode()
         );
 
+        NotificationType notificationType = event.notificationType() != null ? event.notificationType() : NotificationType.EMAIL;
+        String recipient = NotificationType.WEBHOOK.equals(notificationType) ? event.webhookUrl() : "user@example.com";
+
+
         return new NotificationMessage(
                 event.transactionId(),
                 null, // userId not available in payment event
-                NotificationType.EMAIL,
-                "user@example.com", // Mock recipient
+                notificationType,
+                recipient, // Mock recipient
                 subject,
                 content,
                 TransactionStatus.FAILED,

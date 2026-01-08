@@ -1,5 +1,6 @@
 package com.paymentprocessor.common.event;
 
+import com.paymentprocessor.common.model.NotificationType;
 import com.paymentprocessor.common.model.TransactionStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -10,7 +11,9 @@ public record TransactionCompletedEvent(
         LocalDateTime timestamp,
         TransactionStatus finalStatus,
         BigDecimal amount,
-        String userId
+        String userId,
+        NotificationType notificationType,
+        String webhookUrl
 ) implements BaseEvent {
 
     public TransactionCompletedEvent {
@@ -19,9 +22,9 @@ public record TransactionCompletedEvent(
     }
 
     public TransactionCompletedEvent(String transactionId, TransactionStatus finalStatus,
-                                     BigDecimal amount, String userId) {
+                                     BigDecimal amount, String userId, NotificationType notificationType, String webhookUrl) {
         this(BaseEvent.generateEventId(), transactionId, LocalDateTime.now(),
-                finalStatus, amount, userId);
+                finalStatus, amount, userId, notificationType, webhookUrl);
     }
 
     @Override
