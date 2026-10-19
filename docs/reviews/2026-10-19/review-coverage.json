@@ -1,0 +1,1018 @@
+{
+  "review_date": "2026-10-19",
+  "timezone": "Africa/Nairobi",
+  "baseline_commit": "6bbe4ef9bdf5e396d77ceab55d5c9ac18d8566cf",
+  "scope": "Tracked files at the baseline commit; source inspection does not establish runtime correctness.",
+  "file_count": 126,
+  "files": [
+    {
+      "path": ".gitignore",
+      "category": "build_or_configuration",
+      "review": "read",
+      "bytes": 618,
+      "lines": 50,
+      "sha256": "5c11c17de9d771c75d08b84c84eeb5e454ae35e91db28056df50714fd13829a1"
+    },
+    {
+      "path": "LICENSE.md",
+      "category": "documentation",
+      "review": "read",
+      "bytes": 1088,
+      "lines": 21,
+      "sha256": "418f03b7ea0e7b31f1debb20f8271d7856af4b17f755d0f63a965dbf94140a4b"
+    },
+    {
+      "path": "README.md",
+      "category": "documentation",
+      "review": "read",
+      "bytes": 12307,
+      "lines": 207,
+      "sha256": "7c17eb2bb61b851bf7af2cc12c29b2320c1e1a37f8cff06d6f1f530c6625cf12"
+    },
+    {
+      "path": "common/pom.xml",
+      "category": "build_or_configuration",
+      "review": "read",
+      "bytes": 2068,
+      "lines": 55,
+      "sha256": "f06aecca68315286bd6e25335bb8fed10c17f60eb505c6255ea7cab853c90eb9"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/command/BaseCommand.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 229,
+      "lines": 9,
+      "sha256": "ca90e01107437cd8d068864ab9eee001079a80de67b06270dea6cae9306bafb9"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/command/CreateTransactionCommand.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1141,
+      "lines": 31,
+      "sha256": "5bf249d251c999eb26d90b7318ccaba4633fb194aaf75ad15dd4d4f109d50a24"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/command/ProcessFraudCheckCommand.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 663,
+      "lines": 20,
+      "sha256": "f74dbe5509ff2ee21e52b9a117ae87a0d58570576504c66957019e8e118001d6"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/command/ProcessPaymentCommand.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 917,
+      "lines": 25,
+      "sha256": "9330bdc0883cc913ccbd50ea45e02a35c680fc22db286e42d06a0b2eb6c09513"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/event/BaseEvent.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1650,
+      "lines": 37,
+      "sha256": "d6a536ac3a8a4577ccb14772a5a5c35f388e7e3f9178ae96dd47d99dc7ebe318"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/event/FraudCheckCompletedEvent.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 851,
+      "lines": 28,
+      "sha256": "adbbd967861bcc98fbaa3483a50169c41d9aa9339575bb02b148992260bec32f"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/event/FraudCheckRequestedEvent.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 980,
+      "lines": 31,
+      "sha256": "ada763c1a87f87441c4c6a1b680e6fa5efad6403779814654e0d9c0a7175519d"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/event/NotificationSentEvent.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1038,
+      "lines": 31,
+      "sha256": "35c84ef4839b7c174ea06d0afe2aeeaf72fa357ef647208c5b58b11e94eadb20"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/event/PaymentFailedEvent.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1054,
+      "lines": 32,
+      "sha256": "f4489c288c14f5133c43efd502a187284c26759872d810b9a20618ff7f0f73aa"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/event/PaymentProcessedEvent.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 987,
+      "lines": 30,
+      "sha256": "390bb33ba54773a5c12e50b9c51d6787e89bb3c1a29ee4421f758962f2c12b67"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/event/PaymentProcessingStartedEvent.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1058,
+      "lines": 31,
+      "sha256": "cc4790a9c434d0b0ac7519d65eb5621b3bbf52102649087c51d9cff5c45070fd"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/event/TransactionCompletedEvent.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1236,
+      "lines": 34,
+      "sha256": "66b0048bc1aec3140b5a7d39c0eb94f1e3426a1934d839090f879c0ec88dda62"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/event/TransactionCreatedEvent.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1346,
+      "lines": 37,
+      "sha256": "1f197830a24a6a5d34f4d791b15986e8fa8bf695e9c0fa73ef6802dca85dd506"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/exception/CircuitBreakerOpenException.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 523,
+      "lines": 16,
+      "sha256": "006ca74ebaed2ef9561af6642b904cd734a6c7efdf55b0967a839ed6dee97871"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/exception/ErrorResponse.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 2540,
+      "lines": 107,
+      "sha256": "d80ed51f7bd82faa9081e10913cd5fed8934ece684dd385269a565085fb5799a"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/exception/ExternalServiceException.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 889,
+      "lines": 24,
+      "sha256": "a6becd19bc8192dcc179986a98a1bab2302395f7b621214cd4dfc82c5ac3b3e6"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/exception/FraudDetectionException.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 576,
+      "lines": 15,
+      "sha256": "b6a4a2f7459b881b193c57b773a6ad31f9c41f718a1b7bba9c24e09575a610f6"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/exception/FraudulentTransactionException.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 551,
+      "lines": 16,
+      "sha256": "e5c304b681d425bcce9a946665c04716c55175e12486936af031303716fd006a"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/exception/GlobalExceptionHandler.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 9997,
+      "lines": 228,
+      "sha256": "6e805671347afdb796a2b6f822fee5dd11697b596b72134e1e5ca7ee24f3852a"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/exception/InvalidTransactionException.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 582,
+      "lines": 15,
+      "sha256": "688d1a3080aca87537462d55f6a8c782d1694c18809c6d7252a609f3e6609125"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/exception/PaymentProcessingException.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 802,
+      "lines": 28,
+      "sha256": "d42bfcbeef39fab5bb1f5c32ca924b03985e270c4754d8d49b4ebebca79557e1"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/exception/PaymentProcessingFailedException.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 639,
+      "lines": 15,
+      "sha256": "4ba228c7db4612d857566e7914061eddd75002df684a92ba4347e6c1dcdc3503"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/exception/RateLimitExceededException.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 898,
+      "lines": 32,
+      "sha256": "183c72366d69842fbb1b98f787c13afeeace879dcd463f34f476cc4e5d863303"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/exception/TransactionNotFoundException.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 369,
+      "lines": 9,
+      "sha256": "46124305cbbb06713faed399de8ba7cc3a3a6d5568a3e3d723843c367fb48d33"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/model/Currency.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 127,
+      "lines": 5,
+      "sha256": "0a98a741e37d4e3faafa015156c197b700c77cf18e502315129675a2c701ca0a"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/model/NotificationType.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 140,
+      "lines": 8,
+      "sha256": "3b6fa2edeaffe22aaf9fbca418b27a06e7003b68911919f390be0d06ca1017a9"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/model/PaymentMethod.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 174,
+      "lines": 9,
+      "sha256": "e8ed35cf5c3c8736d35e768696011dc1ad2530cece0c4675081ece57024f4639"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/model/TransactionStatus.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 228,
+      "lines": 12,
+      "sha256": "7698dd2e8b5a1dbb9473acb5e2cf678761bf19f84417d4fc6cefa68c97ae26c2"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/util/CorrelationIdGenerator.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 677,
+      "lines": 28,
+      "sha256": "b72dc9c3353eec9c4feecfe1820979ec6c5a86395f7fa0cc253c981abd7071d4"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/util/EncryptionUtil.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 2824,
+      "lines": 67,
+      "sha256": "2757e0ef13c8ebc1dd256a7353c611146d0d2a8d3559386bd01742b5d433d232"
+    },
+    {
+      "path": "common/src/main/java/com/paymentprocessor/common/util/TransactionIdGenerator.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 534,
+      "lines": 18,
+      "sha256": "f1aeb58740faf6c476d7af5c8f3f60908e4ed664c171f3c2b1442d9d9251b3c4"
+    },
+    {
+      "path": "docker-compose.yml",
+      "category": "build_or_configuration",
+      "review": "read",
+      "bytes": 1390,
+      "lines": 58,
+      "sha256": "9594180e9f761761ded91ed24bf082a191b40108aff2d4b81df8f2d177e5ed7a"
+    },
+    {
+      "path": "docs/images/payment_saga_flow.png",
+      "category": "diagram",
+      "review": "visually_inspected",
+      "bytes": 52230,
+      "lines": null,
+      "sha256": "f613794564c443faf9b854260f5cabf9430c059eb3b8cd336112b5644dcec687"
+    },
+    {
+      "path": "docs/images/system_architecture.png",
+      "category": "diagram",
+      "review": "visually_inspected",
+      "bytes": 74572,
+      "lines": null,
+      "sha256": "7685cfbbba0f4646d18371bdaab555a33f4fe097883a57e68eb8f2cdfdde1e64"
+    },
+    {
+      "path": "docs/images/testing_pyramid.png",
+      "category": "diagram",
+      "review": "visually_inspected",
+      "bytes": 30429,
+      "lines": null,
+      "sha256": "e8990de83a61e1ba18990bc72fb2b20ee9e21adbeb14abe5ae38f06cf8a90283"
+    },
+    {
+      "path": "fraud-detection-service/Dockerfile",
+      "category": "build_or_configuration",
+      "review": "read",
+      "bytes": 192,
+      "lines": 10,
+      "sha256": "864b1e8cd3b0ca391c7ba631bde1e4d31fbb5fd6b647aafcb05f35180469c576"
+    },
+    {
+      "path": "fraud-detection-service/pom.xml",
+      "category": "build_or_configuration",
+      "review": "read",
+      "bytes": 2640,
+      "lines": 73,
+      "sha256": "9480c17cb1006cad667ab794756b3bfacf925d59c60764d0c8954299546d0721"
+    },
+    {
+      "path": "fraud-detection-service/src/main/java/com/paymentprocessor/fraud/FraudDetectionServiceApplication.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 545,
+      "lines": 16,
+      "sha256": "3dbc46d832b4fba6989769410db7f4c4e8414af96a9052ce5c1d685f8d324bbc"
+    },
+    {
+      "path": "fraud-detection-service/src/main/java/com/paymentprocessor/fraud/client/ExternalFraudApiClient.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 4044,
+      "lines": 84,
+      "sha256": "9d7875a86d621b5d071f6f230972110721eb8c36c425c4fa4c98b7179a7bfc84"
+    },
+    {
+      "path": "fraud-detection-service/src/main/java/com/paymentprocessor/fraud/config/KafkaConfig.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 3215,
+      "lines": 67,
+      "sha256": "e710be5c14df87d560d98b33a7c3b4bc489b78db526f0b2b224e63768dafcd3f"
+    },
+    {
+      "path": "fraud-detection-service/src/main/java/com/paymentprocessor/fraud/config/ResilienceConfig.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1354,
+      "lines": 39,
+      "sha256": "52619eaa7b7d798b9b727fb3b2426482ef84e087f1db554eb787929ff59bbd6b"
+    },
+    {
+      "path": "fraud-detection-service/src/main/java/com/paymentprocessor/fraud/config/WebClientConfig.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 491,
+      "lines": 15,
+      "sha256": "0ad43fc68c33baa0d10dae713b512973be3d22d36b1ee2e9cc4062a0cb68dba1"
+    },
+    {
+      "path": "fraud-detection-service/src/main/java/com/paymentprocessor/fraud/controller/FraudDetectionController.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1468,
+      "lines": 36,
+      "sha256": "22f20f9c91111de02bd4b2a62caffaccab66acab5dd2c1c308a88fb1b60cfd79"
+    },
+    {
+      "path": "fraud-detection-service/src/main/java/com/paymentprocessor/fraud/listener/FraudCheckEventListener.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1941,
+      "lines": 45,
+      "sha256": "42310fc16c777acdf58f4d16a10f19eed533cea818bbff70367b99f7e62ce0e1"
+    },
+    {
+      "path": "fraud-detection-service/src/main/java/com/paymentprocessor/fraud/model/FraudCheckRequest.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 2121,
+      "lines": 47,
+      "sha256": "0924feaf44522c7c11342123223fb101cc7a077512c17322c90915e562bce617"
+    },
+    {
+      "path": "fraud-detection-service/src/main/java/com/paymentprocessor/fraud/model/FraudCheckResponse.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1782,
+      "lines": 42,
+      "sha256": "d7fab91b3186d35ad2fdf6c5a0de3b5ed132eac4f25a2ccb6c73ebf9df7aa160"
+    },
+    {
+      "path": "fraud-detection-service/src/main/java/com/paymentprocessor/fraud/service/FraudDetectionService.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 7087,
+      "lines": 143,
+      "sha256": "6ca3c8aaaec1549a3c13aa7f1bc47fa469b3ae93f5ef10278ce8efefa2c971a7"
+    },
+    {
+      "path": "fraud-detection-service/src/main/resources/application.yml",
+      "category": "build_or_configuration",
+      "review": "read",
+      "bytes": 2290,
+      "lines": 77,
+      "sha256": "bd8ad1b6a39d630829dc8006e2942f32f74063b6782557c536abe5dd28401bef"
+    },
+    {
+      "path": "fraud-detection-service/src/test/java/com/paymentprocessor/fraud/service/FraudDetectionServiceTest.java",
+      "category": "test_source",
+      "review": "read",
+      "bytes": 3319,
+      "lines": 82,
+      "sha256": "5bcbd5e1273ef07786641c87a9676bd61aec3d4aab65f11756077170c4f6c8dd"
+    },
+    {
+      "path": "notification-service/Dockerfile",
+      "category": "build_or_configuration",
+      "review": "read",
+      "bytes": 188,
+      "lines": 11,
+      "sha256": "2a05d5a536b9795cc66d778dfe576efe85d5e0dbdde50f2541f3b7a276f71c98"
+    },
+    {
+      "path": "notification-service/notification-service notes.md",
+      "category": "documentation",
+      "review": "read",
+      "bytes": 12907,
+      "lines": 121,
+      "sha256": "8b60f4ecc9f284f2c4ddde16e0333beaa2fecb8f66aa406db0f9c09596b348e0"
+    },
+    {
+      "path": "notification-service/pom.xml",
+      "category": "build_or_configuration",
+      "review": "read",
+      "bytes": 2850,
+      "lines": 79,
+      "sha256": "ece81eaefa2b1d5b6ab6f9b240950415af9e1363393fcf9b7bf1cd79c5857e66"
+    },
+    {
+      "path": "notification-service/src/main/java/com/paymentprocessor/notification/NotificationServiceApplication.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 630,
+      "lines": 18,
+      "sha256": "4c623e6bc1fc8c3094d2c89794727ddc24b58e5802580794dd132dcfe266e0c6"
+    },
+    {
+      "path": "notification-service/src/main/java/com/paymentprocessor/notification/config/AsyncConfig.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 731,
+      "lines": 21,
+      "sha256": "7e96395b6e76eb103af10a6a97a2f089c0ece6ea9901cf81cdd4e74e481bae99"
+    },
+    {
+      "path": "notification-service/src/main/java/com/paymentprocessor/notification/config/EmailConfig.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1537,
+      "lines": 45,
+      "sha256": "d141bd791cfaec1299c716fa025bf16d462cc398169fddf1f725d970f1e505eb"
+    },
+    {
+      "path": "notification-service/src/main/java/com/paymentprocessor/notification/controller/NotificationController.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1551,
+      "lines": 37,
+      "sha256": "195283f19d5a03eb78ec45c7e9b428d5f54dad638792ed522ab308d9394618d6"
+    },
+    {
+      "path": "notification-service/src/main/java/com/paymentprocessor/notification/listener/TransactionEventListener.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 8723,
+      "lines": 189,
+      "sha256": "6d46faa99b16874bf20202dff528fc5de69af732d847ddafc7d6f1826bda9e9b"
+    },
+    {
+      "path": "notification-service/src/main/java/com/paymentprocessor/notification/model/NotificationMessage.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 2552,
+      "lines": 64,
+      "sha256": "fad34f85ce16683d86402e9679ca19b5ba84aeda29e2814ab62a61e4feaba608"
+    },
+    {
+      "path": "notification-service/src/main/java/com/paymentprocessor/notification/model/WebhookPayload.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1259,
+      "lines": 36,
+      "sha256": "093ce23aaaf0962af6acb1b06e9cad8909e4c6a3d89905bd504257c3d02dc800"
+    },
+    {
+      "path": "notification-service/src/main/java/com/paymentprocessor/notification/service/EmailNotificationService.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 2283,
+      "lines": 54,
+      "sha256": "9a6055ab0a9857399d3a846de753314f500f171ccbf5a51b54a8175073380b79"
+    },
+    {
+      "path": "notification-service/src/main/java/com/paymentprocessor/notification/service/NotificationOrchestrator.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 4234,
+      "lines": 90,
+      "sha256": "ea89cf59aab996f5fac4b331979f17e67c896796ae87570513b59a42da3dbbf2"
+    },
+    {
+      "path": "notification-service/src/main/java/com/paymentprocessor/notification/service/NotificationService.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 297,
+      "lines": 9,
+      "sha256": "94a5f0cd2ec87762ae52e8083931deb3d38aac7d10e1c5c78288df6d606732d1"
+    },
+    {
+      "path": "notification-service/src/main/java/com/paymentprocessor/notification/service/NotificationServiceFactory.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1381,
+      "lines": 35,
+      "sha256": "93aa270badfe062692f0ca5893415c5e74472ad3860260547d012f738c8f652f"
+    },
+    {
+      "path": "notification-service/src/main/java/com/paymentprocessor/notification/service/SMSNotificationService.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1709,
+      "lines": 42,
+      "sha256": "436853ef0b1757e694da7ef88126724d00c2e1894fc261e4b382e8f0044c812d"
+    },
+    {
+      "path": "notification-service/src/main/java/com/paymentprocessor/notification/service/SendGridEmailService.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 2206,
+      "lines": 47,
+      "sha256": "3b55dc359fc9beff51e8702b8d671a17f13f176aaf407eb72e62db10ea75cdbc"
+    },
+    {
+      "path": "notification-service/src/main/java/com/paymentprocessor/notification/service/SmtpEmailService.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 2455,
+      "lines": 56,
+      "sha256": "4d07b7dcefd70a4aa26c33a2b5b1b000adb76c8f5eee3b6c89e36be5f8e4fc34"
+    },
+    {
+      "path": "notification-service/src/main/java/com/paymentprocessor/notification/service/WebhookNotificationService.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 4221,
+      "lines": 86,
+      "sha256": "e10c67a76dfe4c0efbd1cc6c1ae1a23b54b5dbde716d92647cf839493628014e"
+    },
+    {
+      "path": "notification-service/src/main/resources/application.yml",
+      "category": "build_or_configuration",
+      "review": "read",
+      "bytes": 1306,
+      "lines": 57,
+      "sha256": "d5a24b0ef33d33b24c2acfa839e585e7340e0ae7c60e28fbbc94205823e11ccd"
+    },
+    {
+      "path": "notification-service/src/test/java/com/paymentprocessor/notification/service/NotificationOrchestratorTest.java",
+      "category": "test_source",
+      "review": "read",
+      "bytes": 4819,
+      "lines": 95,
+      "sha256": "114cff36533b8fccc1a46030dc5ba92a2b454fb8a4d9afcaac42ea949552f95e"
+    },
+    {
+      "path": "notification-service/src/test/java/com/paymentprocessor/notification/service/NotificationServiceFactoryTest.java",
+      "category": "test_source",
+      "review": "read",
+      "bytes": 1707,
+      "lines": 52,
+      "sha256": "1d44b97682c1eeb0047521dd9db61c608c97cf25d447d3c223964c9696a7be5c"
+    },
+    {
+      "path": "notification-service/src/test/java/com/paymentprocessor/notification/service/SmtpEmailServiceTest.java",
+      "category": "test_source",
+      "review": "read",
+      "bytes": 2135,
+      "lines": 53,
+      "sha256": "1c3328db9744624250fe34df2c7e8302c6489e44eda15b5c52be9e4201f06557"
+    },
+    {
+      "path": "payment-service/Dockerfile",
+      "category": "build_or_configuration",
+      "review": "read",
+      "bytes": 305,
+      "lines": 13,
+      "sha256": "dab8ce68de9ec18efd8a5e09331d4d4e2feb7c8c44aa608e46cd0e67655a8d71"
+    },
+    {
+      "path": "payment-service/docs/payment_flow_documentation.md",
+      "category": "documentation",
+      "review": "read",
+      "bytes": 17069,
+      "lines": 239,
+      "sha256": "d75fef5c62a336cb81590899a9d9b6dac237bbb2c256be5e8d578e4030a17265"
+    },
+    {
+      "path": "payment-service/pom.xml",
+      "category": "build_or_configuration",
+      "review": "read",
+      "bytes": 3654,
+      "lines": 101,
+      "sha256": "67d28cbfa34c19f0aacfd4fa43b70374edb53c9fd809ab787f43c62e134a6ea1"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/PaymentServiceApplication.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 645,
+      "lines": 18,
+      "sha256": "b7161727d859c4f388c29892d39070495944ec119c2da68fa73335cb0549a15f"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/aggregate/TransactionAggregate.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 7359,
+      "lines": 218,
+      "sha256": "7e8fc52d5466291bc7178bef908b03d92ce1f034d6317cff6bb0ef2d70b6937c"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/client/PayPalClient.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1013,
+      "lines": 27,
+      "sha256": "5b06bc5719bbcc377b1ccf75507ae42c1c1b783482606f5271bb8b2dbb5fedb4"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/client/PaymentGatewayClient.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 548,
+      "lines": 13,
+      "sha256": "104d2c053fe979ec8b917efb4d70949d48cb63ed42dba734f5f8d5840e229aba"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/client/StripeClient.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1013,
+      "lines": 27,
+      "sha256": "7e7d61299aee31dd82a5260b0b784be4e21187d41974a64dfea77dd0cb71566d"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/config/JacksonConfig.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 802,
+      "lines": 21,
+      "sha256": "074ee3ffc9ba4132e0bd3b2117281723479dbf548d4990a708d7dbb7089c0d6c"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/config/KafkaConfig.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 3350,
+      "lines": 70,
+      "sha256": "cb7126049cfbcff0933fa10a98d6c0299e1e2e8417c88d3b50734fe697490fca"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/config/OpenAPIConfig.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1084,
+      "lines": 27,
+      "sha256": "0255917dba0299d0cd2b53a6c9e6a88fd17035ffd1266152f35399acf7710192"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/config/ResilienceConfig.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1809,
+      "lines": 45,
+      "sha256": "225a9695b473954b98893daeb9fdbfb445ce03bb887660007ae9ca2cac3da65e"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/controller/PaymentQueryController.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 5566,
+      "lines": 127,
+      "sha256": "829c1ff7ea396ee09070ba10c4f2a2d7d6a5fe0f10cc4db85f7c459f83aa3ad9"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/dto/PaymentRequest.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 400,
+      "lines": 15,
+      "sha256": "6f55e8eb5c8c3bf0a938ee3d6904e4db2591f507b649de45c4fbd56a48f51de8"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/dto/PaymentResponse.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 159,
+      "lines": 7,
+      "sha256": "c1b93a86841f124330ec7bd88b8c36b0e565fb2e34ab2f39b76856da351035f3"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/dto/RefundRequest.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 198,
+      "lines": 9,
+      "sha256": "8a4253b0cb13960e6e6bed9fc9eee727faf98be6c74a2f19407198452938220c"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/dto/RefundResponse.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 153,
+      "lines": 7,
+      "sha256": "64e3edce130749acaaef038f62648fd3836006438f7d2387028834c89fa9f1fd"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/dto/TransactionDetailsDto.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1826,
+      "lines": 41,
+      "sha256": "5374ea8fde52c6e1a10257960b963fcc8b2146faa57307e6e91dfce60370e204"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/dto/TransactionSummaryDto.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 530,
+      "lines": 13,
+      "sha256": "be93d39cb7c47c75aba037f4e3ee1fc03a7c987bd1b1e206d7f70c5f82e72c2e"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/listener/TransactionEventListener.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1325,
+      "lines": 34,
+      "sha256": "18caaaff30c25cab3ee0995d7b0a51a9785990cb5a067ac307fc2aa31663a3a2"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/metrics/PaymentMetrics.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1798,
+      "lines": 44,
+      "sha256": "a73a129b0e6caad62912f4187bc9d114923867bf1eeb42f997906e1d97abf3bc"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/projection/TransactionProjectionHandler.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 4662,
+      "lines": 108,
+      "sha256": "74cfc40a43edc75c0da2c0a3ac357b9fee55651ac01df36af003d6eaacc99d3f"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/publisher/EventPublisher.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1482,
+      "lines": 38,
+      "sha256": "d661b937ec6ee9cc5f1e4568cce60c350438fa15923ff896d5ccf6f0f83d424c"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/query/TransactionReadModel.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 3529,
+      "lines": 110,
+      "sha256": "33cabbf60c21273778e8dbfc3c1a046811896dfa9f4e54aebcaa817fb062a516"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/query/TransactionReadModelRepository.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1774,
+      "lines": 38,
+      "sha256": "9e8d59498623636a4edcfcb4728dd04382bec29b14b70e12e8263e2d701f60a6"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/repository/EventStore.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 436,
+      "lines": 13,
+      "sha256": "bd1775ba5f1e88f2c4eb39f07bef40b85ceb41d633fdcfff43333edac6501ed1"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/repository/JdbcEventStore.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 4326,
+      "lines": 108,
+      "sha256": "654cff7a8e2812e2b2c74dba635e1d455d1ea4cfac496edd264e4640e8c56ca3"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/repository/TransactionAggregateRepository.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 2151,
+      "lines": 58,
+      "sha256": "066fa995ebaa4f82bc2ca024626b3d9d6acdfccd05bef5ab3e40d2c2c0043c1e"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/saga/TransactionSagaOrchestrator.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 3349,
+      "lines": 66,
+      "sha256": "bad9222301117e2b4eff06882a18456bdcb474b190234165556377afd0c10618"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/service/PaymentGatewayFactory.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 978,
+      "lines": 26,
+      "sha256": "e7e579bce4fd2c76abd23c10241278866358b245aaa4c26400825cf3e9ff4f88"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/service/TransactionCommandService.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 9791,
+      "lines": 199,
+      "sha256": "e2d87c4c5f11c03c9922ceb34c7d6ddf6356bbfc879c91d0882363f2812f0cd9"
+    },
+    {
+      "path": "payment-service/src/main/java/com/paymentprocessor/payment/service/TransactionQueryService.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 3119,
+      "lines": 76,
+      "sha256": "87b78cf7f2efb90e0ae6ae68d86b036f646eb24228e89901c5b46cd1f82150e9"
+    },
+    {
+      "path": "payment-service/src/main/resources/application.yml",
+      "category": "build_or_configuration",
+      "review": "read",
+      "bytes": 2293,
+      "lines": 90,
+      "sha256": "0afe9121ce5c8fd693a8a8611da42968c12ce8f2b719cbadae02a72ff25e013d"
+    },
+    {
+      "path": "payment-service/src/main/resources/schema.sql",
+      "category": "build_or_configuration",
+      "review": "read",
+      "bytes": 1194,
+      "lines": 31,
+      "sha256": "cdc3b302888b34030f238720cd069dd07b8bec6cd22e521ed4dee6278d63516b"
+    },
+    {
+      "path": "payment-service/src/test/java/com/paymentprocessor/payment/PaymentServiceIntegrationTest.java",
+      "category": "test_source",
+      "review": "read",
+      "bytes": 2166,
+      "lines": 57,
+      "sha256": "ce66a0f5665818db09d8fb223a959ff437bae17f4034411b0d8beaab3d0f2ef9"
+    },
+    {
+      "path": "payment-service/src/test/java/com/paymentprocessor/payment/aggregate/TransactionAggregateTest.java",
+      "category": "test_source",
+      "review": "read",
+      "bytes": 7040,
+      "lines": 164,
+      "sha256": "ff3c2ecbd6f17afbb4628332d61f287695669cef2438d476c0af579a9569e0ed"
+    },
+    {
+      "path": "pom.xml",
+      "category": "build_or_configuration",
+      "review": "read",
+      "bytes": 4483,
+      "lines": 113,
+      "sha256": "e02cb60d311a6a9afb4d5ea2052224d59965dfc60f1fca1b86bdf293e7621a21"
+    },
+    {
+      "path": "transaction-service/Dockerfile",
+      "category": "build_or_configuration",
+      "review": "read",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "transaction-service/pom.xml",
+      "category": "build_or_configuration",
+      "review": "read",
+      "bytes": 2983,
+      "lines": 83,
+      "sha256": "1824ece45dea07d74f0c7d0c8ed769a1ad123f37ac74eb56d0fd2fcee63ad365"
+    },
+    {
+      "path": "transaction-service/src/main/java/com/paymentprocessor/transaction/TransactionServiceApplication.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 551,
+      "lines": 16,
+      "sha256": "358f6c4fa9ab1215cb5d38e6bcceb6fed6f7000d3966ee53eb151b905877de41"
+    },
+    {
+      "path": "transaction-service/src/main/java/com/paymentprocessor/transaction/config/KafkaProducerConfig.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1777,
+      "lines": 41,
+      "sha256": "afe472923fd5ac2ca09b630b5679d6a433e34101d2f2559fef51c103cc01bed3"
+    },
+    {
+      "path": "transaction-service/src/main/java/com/paymentprocessor/transaction/config/OpenApiConfig.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 1088,
+      "lines": 26,
+      "sha256": "7defb52a6cd4bc5ffaf95f3dd5bf6c17046e325dc23405cdb193b1b33228be7c"
+    },
+    {
+      "path": "transaction-service/src/main/java/com/paymentprocessor/transaction/config/ResilienceConfig.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 944,
+      "lines": 29,
+      "sha256": "a441378ee4d491ce936d36180728e78769ac33c7a74603094b863a0581e9a50c"
+    },
+    {
+      "path": "transaction-service/src/main/java/com/paymentprocessor/transaction/controller/TransactionController.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 5242,
+      "lines": 116,
+      "sha256": "0090a2bc12e8d460d02e7e198e06764c0cfb6fda165a6c1f4f7b5aa6565edea8"
+    },
+    {
+      "path": "transaction-service/src/main/java/com/paymentprocessor/transaction/dto/CreateTransactionRequest.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 3262,
+      "lines": 89,
+      "sha256": "57014ade8db5d3e17b2259ca6fcadcc1ff49b4327b50bd4bf22ccf59ba7f8596"
+    },
+    {
+      "path": "transaction-service/src/main/java/com/paymentprocessor/transaction/dto/CreateTransactionResponse.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 2120,
+      "lines": 68,
+      "sha256": "65c64e3e2619246b87c2c81440f28d444bd7afa1d41b4e0dcd5cda7c58c586d4"
+    },
+    {
+      "path": "transaction-service/src/main/java/com/paymentprocessor/transaction/service/TransactionService.java",
+      "category": "application_source",
+      "review": "read",
+      "bytes": 6058,
+      "lines": 139,
+      "sha256": "8b655f8e6572712af2dfda4d402beafbe33512a074533b7f5d80b0a5d8ba334d"
+    },
+    {
+      "path": "transaction-service/src/main/resources/application.yml",
+      "category": "build_or_configuration",
+      "review": "read",
+      "bytes": 1116,
+      "lines": 48,
+      "sha256": "a347773122e2ee09d632cd670e011dbede431a2d762f72955923655ffdadc61a"
+    },
+    {
+      "path": "transaction-service/src/test/java/com/paymentprocessor/transaction/TransactionServiceIntegrationTest.java",
+      "category": "test_source",
+      "review": "read",
+      "bytes": 3364,
+      "lines": 86,
+      "sha256": "57eb7fce8ee73bfdcb8fa3876d8b6803785ecd0663b90982d7a33507b765da04"
+    },
+    {
+      "path": "transaction-service/src/test/java/com/paymentprocessor/transaction/service/TransactionServiceTest.java",
+      "category": "test_source",
+      "review": "read",
+      "bytes": 3186,
+      "lines": 81,
+      "sha256": "048e92650db6691fd7e78168befdec78e0b6d757658451babc4163c5f8199ccb"
+    },
+    {
+      "path": "transaction-service/src/test/resources/application-test.properties",
+      "category": "test_source",
+      "review": "read",
+      "bytes": 138,
+      "lines": 3,
+      "sha256": "fa18e2d9f812b16c7f1c23e317fa562d4850d8574fccb250664263b66626c1dc"
+    }
+  ],
+  "hash_basis": "Reviewed local working-copy bytes; checkout line endings can differ from Git blob bytes."
+}

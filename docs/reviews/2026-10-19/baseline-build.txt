@@ -1,0 +1,164 @@
+Baseline commit: 6bbe4ef9bdf5e396d77ceab55d5c9ac18d8566cf
+Command: mvn -B -ntp -Dmaven.test.skip=true package
+Toolchain: Apache Maven 3.9.9; Eclipse Temurin Java 21.0.10
+Exit code: 1
+Tests: explicitly skipped for this main-source packaging baseline.
+Machine-specific workspace paths and trailing whitespace normalized below.
+
+[INFO] Scanning for projects...
+[WARNING]
+[WARNING] Some problems were encountered while building the effective model for com.paymentprocessor:payment-service:jar:1.0.0
+[WARNING] 'build.plugins.plugin.version' for org.apache.maven.plugins:maven-compiler-plugin is missing. @ line 91, column 21
+[WARNING]
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING]
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING]
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO]
+[INFO] Real-Time Payment Processing System                                [pom]
+[INFO] common                                                             [jar]
+[INFO] transaction-service                                                [jar]
+[INFO] payment-service                                                    [jar]
+[INFO] fraud-detection-service                                            [jar]
+[INFO] notification-service                                               [jar]
+[INFO]
+[INFO] -----------< com.paymentprocessor:real-time-payment-system >------------
+[INFO] Building Real-Time Payment Processing System 1.0.0                 [1/6]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO]
+[INFO] --------------------< com.paymentprocessor:common >---------------------
+[INFO] Building common 1.0.0                                              [2/6]
+[INFO]   from common\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ common ---
+[INFO] skip non existing resourceDirectory <workspace>\common\src\main\resources
+[INFO]
+[INFO] --- compiler:3.13.0:compile (default-compile) @ common ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 31 source files with javac [debug target 17] to target\classes
+[WARNING] system modules path not set in conjunction with -source 17
+[INFO] Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing.
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ common ---
+[INFO] Not copying test resources
+[INFO]
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ common ---
+[INFO] Not compiling test sources
+[INFO]
+[INFO] --- surefire:3.2.5:test (default-test) @ common ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ common ---
+[INFO] Building jar: <workspace>\common\target\common-1.0.0.jar
+[INFO]
+[INFO] --------------< com.paymentprocessor:transaction-service >--------------
+[INFO] Building transaction-service 1.0.0                                 [3/6]
+[INFO]   from transaction-service\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ transaction-service ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO]
+[INFO] --- compiler:3.13.0:compile (default-compile) @ transaction-service ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 8 source files with javac [debug target 17] to target\classes
+[WARNING] system modules path not set in conjunction with -source 17
+[INFO] Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing.
+[INFO] /<workspace>/transaction-service/src/main/java/com/paymentprocessor/transaction/service/TransactionService.java: <workspace>\transaction-service\src\main\java\com\paymentprocessor\transaction\service\TransactionService.java uses or overrides a deprecated API.
+[INFO] /<workspace>/transaction-service/src/main/java/com/paymentprocessor/transaction/service/TransactionService.java: Recompile with -Xlint:deprecation for details.
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ transaction-service ---
+[INFO] Not copying test resources
+[INFO]
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ transaction-service ---
+[INFO] Not compiling test sources
+[INFO]
+[INFO] --- surefire:3.2.5:test (default-test) @ transaction-service ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ transaction-service ---
+[INFO] Building jar: <workspace>\transaction-service\target\transaction-service-1.0.0.jar
+[INFO]
+[INFO] ----------------< com.paymentprocessor:payment-service >----------------
+[INFO] Building payment-service 1.0.0                                     [4/6]
+[INFO]   from payment-service\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ payment-service ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO]
+[INFO] --- compiler:3.13.0:compile (default-compile) @ payment-service ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 29 source files with javac [debug target 21] to target\classes
+[INFO] Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing.
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR :
+[INFO] -------------------------------------------------------------
+[ERROR] /<workspace>/payment-service/src/main/java/com/paymentprocessor/payment/service/TransactionCommandService.java:[121,42] cannot find symbol
+  symbol:   method getNotificationType()
+  location: variable aggregate of type com.paymentprocessor.payment.aggregate.TransactionAggregate
+[ERROR] /<workspace>/payment-service/src/main/java/com/paymentprocessor/payment/service/TransactionCommandService.java:[131,38] cannot find symbol
+  symbol:   method getNotificationType()
+  location: variable aggregate of type com.paymentprocessor.payment.aggregate.TransactionAggregate
+[ERROR] /<workspace>/payment-service/src/main/java/com/paymentprocessor/payment/service/TransactionCommandService.java:[146,34] cannot find symbol
+  symbol:   method getNotificationType()
+  location: variable aggregate of type com.paymentprocessor.payment.aggregate.TransactionAggregate
+[INFO] 3 errors
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for Real-Time Payment Processing System 1.0.0:
+[INFO]
+[INFO] Real-Time Payment Processing System ................ SUCCESS [  0.010 s]
+[INFO] common ............................................. SUCCESS [08:35 min]
+[INFO] transaction-service ................................ SUCCESS [09:41 min]
+[INFO] payment-service .................................... FAILURE [02:00 min]
+[INFO] fraud-detection-service ............................ SKIPPED
+[INFO] notification-service ............................... SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  20:33 min
+[INFO] Finished at: 2026-10-19T15:08:44+03:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.13.0:compile (default-compile) on project payment-service: Compilation failure: Compilation failure:
+[ERROR] /<workspace>/payment-service/src/main/java/com/paymentprocessor/payment/service/TransactionCommandService.java:[121,42] cannot find symbol
+[ERROR]   symbol:   method getNotificationType()
+[ERROR]   location: variable aggregate of type com.paymentprocessor.payment.aggregate.TransactionAggregate
+[ERROR] /<workspace>/payment-service/src/main/java/com/paymentprocessor/payment/service/TransactionCommandService.java:[131,38] cannot find symbol
+[ERROR]   symbol:   method getNotificationType()
+[ERROR]   location: variable aggregate of type com.paymentprocessor.payment.aggregate.TransactionAggregate
+[ERROR] /<workspace>/payment-service/src/main/java/com/paymentprocessor/payment/service/TransactionCommandService.java:[146,34] cannot find symbol
+[ERROR]   symbol:   method getNotificationType()
+[ERROR]   location: variable aggregate of type com.paymentprocessor.payment.aggregate.TransactionAggregate
+[ERROR] -> [Help 1]
+[ERROR]
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR]
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[ERROR]
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :payment-service
