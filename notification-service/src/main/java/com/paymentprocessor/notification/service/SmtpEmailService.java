@@ -40,10 +40,8 @@ public class SmtpEmailService implements NotificationService {
             mailMessage.setText(message.getContent());
             mailMessage.setFrom("noreply@paymentprocessor.com");
 
-            // Simulate email sending delay
-            Thread.sleep(100);
+            mailSender.send(mailMessage);
 
-            // For demo purposes, we'll just log instead of actually sending
             log.info("Email sent successfully for transaction: {} to: {}",
                     message.getTransactionId(), message.getRecipient());
             return CompletableFuture.completedFuture(true);

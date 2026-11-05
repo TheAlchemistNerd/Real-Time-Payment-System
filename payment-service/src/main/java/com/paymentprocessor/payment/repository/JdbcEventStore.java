@@ -50,11 +50,11 @@ public class JdbcEventStore implements EventStore {
         log.info("Saving {} events for aggregate: {}", events.size(), aggregateId);
 
         // Check Optimistic locking
-        var currentVersion = getLastVersionForAggregate(aggregateId);
-        if(currentVersion.isPresent() && !currentVersion.get().equals(expectedVersion)) {
+        long currentVersion = getLastVersionForAggregate(aggregateId).orElse(0L);
+        if (currentVersion != expectedVersion) {
             throw new OptimisticLockingFailureException(
                     "Aggregate %s has been modified. Expected version: %d Current version: %d"
-                            .formatted(aggregateId, expectedVersion, currentVersion.get()));
+                            .formatted(aggregateId, expectedVersion, currentVersion));
         }
 
         long sequenceNumber = expectedVersion;

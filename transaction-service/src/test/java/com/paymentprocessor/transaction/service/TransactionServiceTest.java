@@ -1,6 +1,6 @@
 package com.paymentprocessor.transaction.service;
 
-import com.paymentprocessor.common.event.TransactionCreatedEvent;
+import com.paymentprocessor.common.command.CreateTransactionCommand;
 import com.paymentprocessor.common.model.Currency;
 import com.paymentprocessor.common.model.PaymentMethod;
 import com.paymentprocessor.common.util.TransactionIdGenerator;
@@ -70,8 +70,8 @@ class TransactionServiceTest {
         transactionService.createTransaction(request, correlationId);
 
         // Then
-        var eventCaptor = ArgumentCaptor.forClass(TransactionCreatedEvent.class);
-        verify(kafkaTemplate).send(eq("transaction-created"), eq(transactionId), eventCaptor.capture());
+        var eventCaptor = ArgumentCaptor.forClass(CreateTransactionCommand.class);
+        verify(kafkaTemplate).send(eq("create-transaction"), eq(transactionId), eventCaptor.capture());
 
         var capturedEvent = eventCaptor.getValue();
         assertThat(capturedEvent.transactionId()).isEqualTo(transactionId);

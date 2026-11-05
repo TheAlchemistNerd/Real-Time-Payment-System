@@ -1,164 +1,169 @@
 package com.paymentprocessor.payment.aggregate;
 
-import com.paymentprocessor.common.event.FraudCheckCompletedEvent;
-import com.paymentprocessor.common.event.PaymentFailedEvent;
-import com.paymentprocessor.common.event.PaymentProcessedEvent;
-import com.paymentprocessor.common.event.PaymentProcessingStartedEvent;
-import com.paymentprocessor.common.event.TransactionCreatedEvent;
+import com.paymentprocessor.common.command.*;
+import com.paymentprocessor.common.event.*;
+import com.paymentprocessor.common.exception.InvalidTransactionException;
 import com.paymentprocessor.common.model.Currency;
+import com.paymentprocessor.common.model.NotificationType;
 import com.paymentprocessor.common.model.PaymentMethod;
 import com.paymentprocessor.common.model.TransactionStatus;
-import com.paymentprocessor.payment.command.CreateTransactionCommand;
-import com.paymentprocessor.payment.command.ProcessFraudCheckCommand;
-import com.paymentprocessor.payment.command.ProcessPaymentCommand;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import java.math.BigDecimal;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import java.time.LocalDateTime;
+import java.util.List;
+import static org.assertj.core.api.Assertions.*;
 
 class TransactionAggregateTest {
+    private static final String ID = "tx-123";
+    private static final BigDecimal AMOUNT = new BigDecimal("100.00");
+    private static final LocalDateTime CREATED_AT = LocalDateTime.of(2026, 10, 19, 10, 0);
+    private static final LocalDateTime COMPLETED_AT = CREATED_AT.plusMinutes(1);
 
-    private TransactionAggregate aggregate;
-    private String transactionId;
-
-    @BeforeEach
-    void setUp() {
-        transactionId = UUID.randomUUID().toString();
-        aggregate = new TransactionAggregate(transactionId);
+    private CreateTransactionCommand create(String id, String webhook) {
+        return new CreateTransactionCommand(id, "user-1", AMOUNT, Currency.USD,
+                PaymentMethod.CREDIT_CARD, "Order", webhook);
     }
 
-    @Nested
-    @DisplayName("Given a new TransactionAggregate")
-    class NewTransactionAggregate {
-
-        @Test
-        @DisplayName("when handling a CreateTransactionCommand, it should apply a TransactionCreatedEvent and change status to PENDING")
-        void handleCreateTransactionCommand() {
-            // Given
-            var command = new CreateTransactionCommand(
-                    transactionId,
-                    "user123",
-                    new BigDecimal("100.00"),
-                    Currency.USD,
-                    PaymentMethod.CREDIT_CARD,
-                    "Test Transaction"
-            );
-
-            // When
-            aggregate.handle(command);
-
-            // Then
-            assertAll(
-                    () -> assertThat(aggregate.getStatus()).isEqualTo(TransactionStatus.PENDING),
-                    () -> assertThat(aggregate.getUncommittedEvents()).hasSize(1),
-                    () -> assertThat(aggregate.getUncommittedEvents().get(0)).isInstanceOf(TransactionCreatedEvent.class)
-            );
-
-            var event = (TransactionCreatedEvent) aggregate.getUncommittedEvents().get(0);
-            assertAll(
-                    () -> assertThat(event.transactionId()).isEqualTo(transactionId),
-                    () -> assertThat(event.userId()).isEqualTo("user123"),
-                    () -> assertThat(event.amount()).isEqualTo(new BigDecimal("100.00"))
-            );
-        }
+    private TransactionCreatedEvent created(String webhook) {
+        return new TransactionCreatedEvent("created-event", ID, CREATED_AT, "user-1", AMOUNT, Currency.USD,
+                PaymentMethod.CREDIT_CARD, "Order", webhook);
     }
 
-    @Nested
-    @DisplayName("Given an existing PENDING TransactionAggregate")
-    class ExistingPendingTransactionAggregate {
-
-        @BeforeEach
-        void setUp() {
-            var createCommand = new CreateTransactionCommand(
-                    transactionId,
-                    "user123",
-                    new BigDecimal("100.00"),
-                    Currency.USD,
-                    PaymentMethod.CREDIT_CARD,
-                    "Test Transaction"
-            );
-            aggregate.handle(createCommand);
-            aggregate.clearUncommittedEvents();
-        }
-
-        @Test
-        @DisplayName("when handling a ProcessFraudCheckCommand with passed=false, it should apply FraudCheckCompletedEvent and change status to FRAUD_CHECK_FAILED")
-        void handleProcessFraudCheckCommandFailed() {
-            // Given
-            var command = new ProcessFraudCheckCommand(transactionId, false, 95.0, "High risk score");
-
-            // When
-            aggregate.handle(command);
-
-            // Then
-            assertAll(
-                    () -> assertThat(aggregate.getStatus()).isEqualTo(TransactionStatus.FRAUD_CHECK_FAILED),
-                    () -> assertThat(aggregate.getUncommittedEvents()).hasSize(1),
-                    () -> assertThat(aggregate.getUncommittedEvents().get(0)).isInstanceOf(FraudCheckCompletedEvent.class)
-            );
-
-            var event = (FraudCheckCompletedEvent) aggregate.getUncommittedEvents().get(0);
-            assertThat(event.passed()).isFalse();
-        }
-
-        @Test
-        @DisplayName("when handling a ProcessFraudCheckCommand with passed=true, it should apply FraudCheckCompletedEvent and change status to FRAUD_CHECK_PASSED")
-        void handleProcessFraudCheckCommandPassed() {
-            // Given
-            var command = new ProcessFraudCheckCommand(transactionId, true, 10.0, "Low risk");
-
-            // When
-            aggregate.handle(command);
-
-            // Then
-            assertAll(
-                    () -> assertThat(aggregate.getStatus()).isEqualTo(TransactionStatus.FRAUD_CHECK_PASSED),
-                    () -> assertThat(aggregate.getUncommittedEvents()).hasSize(1),
-                    () -> assertThat(aggregate.getUncommittedEvents().get(0)).isInstanceOf(FraudCheckCompletedEvent.class)
-            );
-
-            var event = (FraudCheckCompletedEvent) aggregate.getUncommittedEvents().get(0);
-            assertThat(event.passed()).isTrue();
-        }
+    @Test
+    void firstCreationIsAcceptedForAnAllocatedIdentity() {
+        var aggregate = new TransactionAggregate(ID);
+        aggregate.handle(create(ID, "https://merchant.example/events"));
+        assertThat(aggregate.getStatus()).isEqualTo(TransactionStatus.PENDING);
+        assertThat(aggregate.getVersion()).isEqualTo(1);
+        assertThat(aggregate.getUncommittedEvents()).singleElement()
+                .isInstanceOfSatisfying(TransactionCreatedEvent.class, event -> {
+                    assertThat(event.transactionId()).isEqualTo(ID);
+                    assertThat(event.amount()).isEqualByComparingTo(AMOUNT);
+                    assertThat(event.webhookUrl()).isEqualTo("https://merchant.example/events");
+                });
     }
 
-    @Nested
-    @DisplayName("Given an existing FRAUD_CHECK_PASSED TransactionAggregate")
-    class ExistingFraudCheckPassedTransactionAggregate {
+    @Test
+    void duplicateCreationLeavesExistingStateAndEventsUnchanged() {
+        var aggregate = new TransactionAggregate(ID);
+        aggregate.loadFromHistory(List.of(created(null)));
+        assertThatThrownBy(() -> aggregate.handle(create(ID, null)))
+                .isInstanceOf(InvalidTransactionException.class);
+        assertThat(aggregate.getVersion()).isEqualTo(1);
+        assertThat(aggregate.getUncommittedEvents()).isEmpty();
+    }
 
-        @BeforeEach
-        void setUp() {
-            // Initial state
-            aggregate.on(new TransactionCreatedEvent(transactionId, "user123", new BigDecimal("200.00"), Currency.EUR, PaymentMethod.BANK_TRANSFER, "desc"));
-            aggregate.on(new FraudCheckCompletedEvent(transactionId, true, 5.0, "Low risk"));
-            aggregate.clearUncommittedEvents();
-        }
+    @Test
+    void commandCannotReplaceAllocatedIdentity() {
+        var aggregate = new TransactionAggregate(ID);
+        assertThatThrownBy(() -> aggregate.handle(create("another-transaction", null)))
+                .isInstanceOf(InvalidTransactionException.class);
+        assertThat(aggregate.getTransactionId()).isEqualTo(ID);
+        assertThat(aggregate.getVersion()).isZero();
+        assertThat(aggregate.getUncommittedEvents()).isEmpty();
+    }
 
-        @Test
-        @DisplayName("when handling a ProcessPaymentCommand, it should apply PaymentProcessingStartedEvent and PaymentProcessedEvent and change status to COMPLETED")
-        void handleProcessPaymentCommand() {
-            // Given
-            var command = new ProcessPaymentCommand(transactionId, new BigDecimal("200.00"), "Stripe");
+    @Test
+    void notificationPreferenceSurvivesHistoryReplay() {
+        var aggregate = new TransactionAggregate(ID);
+        aggregate.loadFromHistory(List.of(created("https://merchant.example/events")));
+        assertThat(aggregate.getNotificationType()).isEqualTo(NotificationType.WEBHOOK);
+        assertThat(aggregate.getWebhookUrl()).isEqualTo("https://merchant.example/events");
+        assertThat(aggregate.getUncommittedEvents()).isEmpty();
+    }
 
-            // When
-            aggregate.handle(command);
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = "   ")
+    void absentWebhookRetainsEmailFallback(String webhook) {
+        var aggregate = new TransactionAggregate(ID);
+        aggregate.loadFromHistory(List.of(created(webhook)));
+        assertThat(aggregate.getNotificationType()).isEqualTo(NotificationType.EMAIL);
+    }
 
-            // Then
-            assertAll(
-                    () -> assertThat(aggregate.getStatus()).isEqualTo(TransactionStatus.COMPLETED),
-                    () -> assertThat(aggregate.getUncommittedEvents()).hasSize(2),
-                    () -> assertThat(aggregate.getUncommittedEvents().get(0)).isInstanceOf(PaymentProcessingStartedEvent.class),
-                    () -> assertThat(aggregate.getUncommittedEvents().get(1)).isInstanceOf(PaymentProcessedEvent.class)
-            );
+    @Test
+    void passedFraudCheckEnablesPaymentProcessing() {
+        var aggregate = new TransactionAggregate(ID);
+        aggregate.loadFromHistory(List.of(created(null)));
+        aggregate.handle(new ProcessFraudCheckCommand(ID, true, 0.1, "Low risk"));
+        assertThat(aggregate.getStatus()).isEqualTo(TransactionStatus.FRAUD_CHECK_PASSED);
+        assertThat(aggregate.getUncommittedEvents()).singleElement().isInstanceOf(FraudCheckCompletedEvent.class);
+    }
 
-            var event = (PaymentProcessedEvent) aggregate.getUncommittedEvents().get(1);
-            assertThat(event.paymentGatewayTransactionId()).isNotNull();
-        }
+    @Test
+    void declinedFraudCheckPreventsPaymentProcessing() {
+        var aggregate = new TransactionAggregate(ID);
+        aggregate.loadFromHistory(List.of(created(null)));
+        aggregate.handle(new ProcessFraudCheckCommand(ID, false, 0.9, "High risk"));
+        assertThat(aggregate.getStatus()).isEqualTo(TransactionStatus.FRAUD_CHECK_FAILED);
+        assertThatThrownBy(() -> aggregate.handle(new ProcessPaymentCommand(ID, AMOUNT, "test")))
+                .isInstanceOf(InvalidTransactionException.class);
+        assertThat(aggregate.getUncommittedEvents()).hasSize(1);
+    }
+
+    @Test
+    void paymentCommandStartsProcessingWithoutInventingProviderSuccess() {
+        var aggregate = new TransactionAggregate(ID);
+        aggregate.loadFromHistory(List.of(created(null), new FraudCheckCompletedEvent(ID, true, 0.1, "Low risk")));
+        aggregate.handle(new ProcessPaymentCommand(ID, AMOUNT, "test"));
+        assertThat(aggregate.getStatus()).isEqualTo(TransactionStatus.PAYMENT_PROCESSING);
+        assertThat(aggregate.getPaymentGatewayTransactionId()).isNull();
+        assertThat(aggregate.getCompletedAt()).isNull();
+        assertThat(aggregate.getUncommittedEvents()).singleElement().isInstanceOf(PaymentProcessingStartedEvent.class);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = TransactionStatus.class, names = {"COMPLETED", "FAILED"})
+    void completionTransitionsProcessingToItsRecordedOutcomeAndReplaysWithoutNewEvents(TransactionStatus finalStatus) {
+        var completion = new TransactionCompletedEvent("completed-event", ID, COMPLETED_AT, finalStatus,
+                AMOUNT, "user-1", NotificationType.EMAIL, null);
+        var history = List.<BaseEvent>of(created(null),
+                new FraudCheckCompletedEvent("fraud-event", ID, CREATED_AT.plusSeconds(1), true, 0.1, "Low risk"),
+                new PaymentProcessingStartedEvent("processing-event", ID, CREATED_AT.plusSeconds(2),
+                        AMOUNT, PaymentMethod.CREDIT_CARD, "test"));
+        var aggregate = new TransactionAggregate(ID);
+        aggregate.loadFromHistory(history);
+        assertThat(aggregate.getStatus()).isEqualTo(TransactionStatus.PAYMENT_PROCESSING);
+        assertThat(aggregate.getCompletedAt()).isNull();
+
+        aggregate.apply(completion);
+
+        assertThat(aggregate.getStatus()).isEqualTo(finalStatus);
+        assertThat(aggregate.getCompletedAt()).isEqualTo(COMPLETED_AT);
+        assertThat(aggregate.getVersion()).isEqualTo(4);
+        assertThat(aggregate.getUncommittedEvents()).containsExactly(completion);
+        var replay = new TransactionAggregate(ID);
+        var allEvents = new java.util.ArrayList<>(history);
+        allEvents.add(completion);
+        replay.loadFromHistory(allEvents);
+        assertThat(replay.getStatus()).isEqualTo(finalStatus);
+        assertThat(replay.getCompletedAt()).isEqualTo(COMPLETED_AT);
+        assertThat(replay.getVersion()).isEqualTo(4);
+        assertThat(replay.getUncommittedEvents()).isEmpty();
+    }
+
+    @Test
+    void completionReplayPreservesProviderReferenceAndUsesTheCompletionTimestamp() {
+        var processedAt = COMPLETED_AT.minusSeconds(5);
+        var history = List.<BaseEvent>of(created(null),
+                new FraudCheckCompletedEvent("fraud-event", ID, CREATED_AT.plusSeconds(1), true, 0.1, "Low risk"),
+                new PaymentProcessingStartedEvent("processing-event", ID, CREATED_AT.plusSeconds(2),
+                        AMOUNT, PaymentMethod.CREDIT_CARD, "test"),
+                new PaymentProcessedEvent("processed-event", ID, processedAt, AMOUNT, "provider-123", "test"),
+                new TransactionCompletedEvent("completed-event", ID, COMPLETED_AT, TransactionStatus.COMPLETED,
+                        AMOUNT, "user-1", NotificationType.EMAIL, null));
+        var replay = new TransactionAggregate(ID);
+
+        replay.loadFromHistory(history);
+
+        assertThat(replay.getStatus()).isEqualTo(TransactionStatus.COMPLETED);
+        assertThat(replay.getPaymentGatewayTransactionId()).isEqualTo("provider-123");
+        assertThat(replay.getCompletedAt()).isEqualTo(COMPLETED_AT);
+        assertThat(replay.getVersion()).isEqualTo(5);
+        assertThat(replay.getUncommittedEvents()).isEmpty();
     }
 }

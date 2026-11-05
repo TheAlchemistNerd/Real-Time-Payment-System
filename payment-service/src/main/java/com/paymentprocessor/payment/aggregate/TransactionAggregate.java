@@ -3,6 +3,7 @@ package com.paymentprocessor.payment.aggregate;
 import com.paymentprocessor.common.event.*;
 import com.paymentprocessor.common.exception.InvalidTransactionException;
 import com.paymentprocessor.common.model.Currency;
+import com.paymentprocessor.common.model.NotificationType;
 import com.paymentprocessor.common.model.PaymentMethod;
 import com.paymentprocessor.common.model.TransactionStatus;
 import com.paymentprocessor.common.command.CreateTransactionCommand;
@@ -65,7 +66,7 @@ public class TransactionAggregate {
         log.info("Handling CreateTransactionCommand for transaction: {}",
                 command.transactionId());
 
-        validateNewTransaction();
+        validateNewTransaction(command.transactionId());
 
         var event = new TransactionCreatedEvent(
                 command.transactionId(),
@@ -166,6 +167,14 @@ public class TransactionAggregate {
         log.debug("Applied PaymentFailedEvent for transaction: {}", this.transactionId);
     }
 
+    public void on(TransactionCompletedEvent event) {
+        this.status = event.finalStatus();
+        this.completedAt = event.timestamp();
+        this.version++;
+
+        log.debug("Applied TransactionCompletedEvent for transaction: {}", this.transactionId);
+    }
+
     public void apply(BaseEvent event) {
         applyEvent(event);
         this.uncommittedEvents.add(event);
@@ -178,13 +187,17 @@ public class TransactionAggregate {
             case PaymentProcessingStartedEvent e -> on(e);
             case PaymentProcessedEvent e -> on(e);
             case PaymentFailedEvent e -> on(e);
+            case TransactionCompletedEvent e -> on(e);
             default -> throw new IllegalArgumentException("Unknown event type: " + event.getClass().getSimpleName());
         }
     }
 
-    private void validateNewTransaction() {
-        if (this.transactionId != null) {
+    private void validateNewTransaction(String commandTransactionId) {
+        if (this.status != null) {
             throw new InvalidTransactionException("Transaction already exists: " + this.transactionId);
+        }
+        if (this.transactionId != null && !this.transactionId.equals(commandTransactionId)) {
+            throw new InvalidTransactionException("Transaction ID does not match the allocated identity");
         }
     }
 
@@ -205,6 +218,11 @@ public class TransactionAggregate {
 
     public List<BaseEvent> getUncommittedEvents() {
         return Collections.unmodifiableList(uncommittedEvents);
+    }
+
+    public NotificationType getNotificationType() {
+        return webhookUrl != null && !webhookUrl.isBlank()
+                ? NotificationType.WEBHOOK : NotificationType.EMAIL;
     }
 
     public void clearUncommittedEvents() {
