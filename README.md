@@ -4,7 +4,9 @@
 
 This Java/Spring repository is being developed into a platform for multi-merchant payment orchestration, wallets, balances, and transfers. A single-business installation uses the same architecture with one tenant.
 
-**The B1.1 build milestone passed on 5 November 2026.** A clean local run passed all 37 unit tests and eight integration tests, including a Kafka command round trip, four PostgreSQL event-store checks, two HTTP checks, and a local SMTP delivery. Packaging inspection passed for all four service JARs. The next B1 gate is to start each service with its required configuration and dependencies. [B1.1 evidence record](docs/development/2026-11-04-b1-1-evidence.md)
+**The B1.1 build milestone passed on 5 November 2026.** A clean local run passed 37 unit tests and eight integration tests. All four service JARs passed packaging inspection. [B1.1 evidence record](docs/development/2026-11-04-b1-1-evidence.md)
+
+The packaged transaction service passed its startup check. It reported ready, accepted a payment request over HTTP, and published a command to Kafka with the transaction ID returned to the caller. Payment, fraud, and notification startup remain open as we assemble the local stack. [Transaction startup evidence](docs/development/2026-11-05-transaction-startup.md)
 
 Start with the [build and test guide](docs/development/build-and-test.md). The [19 October review](docs/reviews/2026-10-19/README.md) records findings at commit `6bbe4ef`; the [remediation plan](docs/reviews/2026-10-19/remediation-plan.md) defines the ordered work and acceptance gates. Preserve that review as a historical snapshot and use current milestone evidence to assess subsequent changes. The architecture discussion below describes the intended design; the review identifies where implementation and evidence remain incomplete.
 
@@ -159,12 +161,12 @@ Use the repository wrapper from the repository root. On Windows, [scripts/Test-B
 3.  **Run the full verification lifecycle** with Docker ready:
     ```powershell
     docker info
-    .\scripts\Test-Backend.ps1 -MavenArguments @('-B', '-ntp', 'verify')
+    .\scripts\Test-Backend.ps1 -MavenArguments @('-B', '-ntp', '-fae', 'clean', 'verify')
     ```
 
 Compiler 3.13.0 uses Java release 21. Enforcer 3.5.0 accepts Java `[21,22)` and Maven `[3.9.9,4)`; the wrapper selects Maven 3.9.9. Surefire 3.5.2 runs unit classes ending in `Test` during `test`; Failsafe 3.5.2 runs integration classes ending in `IT` during the `verify` lifecycle, which also runs unit tests and packaging. On Linux/macOS, use `./mvnw -B -ntp clean test` or `./mvnw -B -ntp verify`.
 
-Integration tests cover transaction HTTP requests with a mocked Kafka producer, command serialization through a real Kafka broker, the JDBC event store against PostgreSQL 16.6, and delivery to a local SMTP server. The event-store test creates its own schema; B2 will validate production migrations.
+Integration tests cover transaction request validation with a mocked Kafka producer, HTTP intake through the packaged transaction service to a real Kafka broker, the JDBC event store against PostgreSQL 16.6, and delivery to a local SMTP server. The event-store test creates its own schema. B2 will validate production migrations.
 
 ### Local Infrastructure
 

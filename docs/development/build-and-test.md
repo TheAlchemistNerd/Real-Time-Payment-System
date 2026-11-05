@@ -1,8 +1,8 @@
 # Build and test
 
-Updated: 5 November 2026. Scope: B1.1, the reproducible build, unit tests, and selected integration boundaries within [B1: Build and bootstrap](../reviews/2026-10-19/remediation-plan.md#ordered-work-packages-and-acceptance-gates).
+Updated 5 November 2026. This guide covers the reproducible build, unit and integration tests, and the packaged transaction-service startup check. [B1 build and bootstrap plan](../reviews/2026-10-19/remediation-plan.md#ordered-work-packages-and-acceptance-gates)
 
-Run the full suite locally with JDK 21, the Maven wrapper, and a working Linux container engine. On 5 November, `clean verify` passed all 37 unit tests and eight integration tests with zero skips. See the [B1.1 evidence record](2026-11-04-b1-1-evidence.md) and the [19 October compilation baseline](../reviews/2026-10-19/README.md#executed-checks).
+Run the full suite locally with JDK 21, the Maven wrapper, and a working Linux container engine. The B1.1 build passed 37 unit tests and eight integration tests before the Kafka test was extended to launch the executable JAR. The startup record tracks verification of that change. [B1.1 results](2026-11-04-b1-1-evidence.md) · [Transaction startup evidence](2026-11-05-transaction-startup.md) · [19 October compilation baseline](../reviews/2026-10-19/README.md#executed-checks)
 
 ## Toolchain
 
@@ -57,13 +57,13 @@ Run commands from the repository root so Maven can build the parent and all five
 | `@('-B', '-ntp', 'verify')` | Run preceding lifecycle phases, including unit tests and packaging, then run and verify Failsafe integration tests. | Docker for PostgreSQL and Kafka; an ephemeral loopback port for SMTP. |
 | `@('-B', '-ntp', 'clean', 'verify')` | Repeat full verification from clean build outputs. | Same integration-test requirements. |
 
-For example, run the full verification lifecycle on Windows with:
+For milestone verification, clean all outputs and let independent modules finish if a module fails.
 
 ```powershell
-.\scripts\Test-Backend.ps1 -MavenArguments @('-B', '-ntp', 'verify')
+.\scripts\Test-Backend.ps1 -MavenArguments @('-B', '-ntp', '-fae', 'clean', 'verify')
 ```
 
-The corresponding Linux/macOS commands are `./mvnw -B -ntp clean test`, `./mvnw -B -ntp package`, and `./mvnw -B -ntp verify`.
+The corresponding Linux/macOS commands are `./mvnw -B -ntp clean test`, `./mvnw -B -ntp package`, and `./mvnw -B -ntp -fae clean verify`.
 
 `-B` selects batch output and `-ntp` hides dependency transfer progress. Commands remain visible and stream their normal build and test output.
 
@@ -81,6 +81,14 @@ For a focused unit-test repair, include dependent reactor modules with `-am`:
 
 The Surefire property permits upstream modules without that named test to complete. Check the payment-service report to confirm that the requested class actually executed. Follow a focused repair with the milestone's required reactor checks.
 
+To exercise just the packaged transaction service and its broker, start Docker and run the following in the repository root.
+
+```powershell
+.\scripts\Test-Backend.ps1 -MavenArguments @('-B', '-ntp', '-pl', 'transaction-service', '-am', '-Dit.test=TransactionKafkaIT', '-Dfailsafe.failIfNoSpecifiedTests=false', 'clean', 'verify')
+```
+
+On Linux/macOS, use `./mvnw -B -ntp -pl transaction-service -am -Dit.test=TransactionKafkaIT -Dfailsafe.failIfNoSpecifiedTests=false clean verify`. This builds the transaction service and its dependencies, runs their unit tests, packages the JAR, then selects its Kafka integration test. Failsafe passes the path of that JAR to the test. Inspect the `TransactionKafkaIT` report in `transaction-service/target/failsafe-reports/` for its result and the adjacent `packaged-transaction.log` for child-process output.
+
 ### Implemented integration-test scope
 
 The current integration classes exercise these boundaries. Consult the dated evidence record for completed results and commands that select only part of the suite.
@@ -88,7 +96,7 @@ The current integration classes exercise these boundaries. Consult the dated evi
 | Class | Dependency and intended coverage | Evidence boundary |
 | --- | --- | --- |
 | [TransactionHttpIT](../../transaction-service/src/test/java/com/paymentprocessor/transaction/TransactionHttpIT.java) | Spring Boot context and MockMvc HTTP requests, with a mocked Kafka template; request validation, accepted status, and command dispatch interaction. | HTTP/context behaviour with simulated producer acknowledgement. Real Kafka delivery and consumer processing require separate tests. |
-| [TransactionKafkaIT](../../transaction-service/src/test/java/com/paymentprocessor/transaction/TransactionKafkaIT.java) | Testcontainers `confluentinc/cp-kafka:7.6.1`; actual producer serialization and consumption of the keyed creation command. | Intake-to-broker boundary only; payment processing, broker recovery, and durable intake require separate scenarios. |
+| [TransactionKafkaIT](../../transaction-service/src/test/java/com/paymentprocessor/transaction/TransactionKafkaIT.java) | Launches the executable transaction JAR, waits for HTTP readiness, and submits a creation request. A consumer checks the returned transaction ID against the Kafka record key and JSON command on a real broker (`confluentinc/cp-kafka:7.6.1`). | Covers the public intake API through broker publication. Payment execution, durable intake, and restart recovery have separate acceptance criteria. |
 | [PaymentEventStoreIT](../../payment-service/src/test/java/com/paymentprocessor/payment/PaymentEventStoreIT.java) | Testcontainers `postgres:16.6-alpine`; JDBC event persistence and replay, rollback, and stale expected-version rejection. | The test creates its own `domain_events` schema. Production migrations and payment-service bootstrap remain B2/B1 work respectively. |
 | [SmtpEmailServiceIT](../../notification-service/src/test/java/com/paymentprocessor/notification/service/SmtpEmailServiceIT.java) | GreenMail on an ephemeral loopback port; SMTP submission and received sender, recipient, subject, and body. | Actual local SMTP transport; external provider delivery, Spring notification-service startup, and durable retry behaviour require separate checks. |
 
@@ -147,7 +155,7 @@ Local `logs/`, `target/`, and `*.log` files are ignored by Git. Preserve selecte
 - per-module test counts and any skipped or excluded scope;
 - reproduced failure, implemented repair, completed verification, and remaining acceptance criteria.
 
-B1.1 evidence is one part of B1. The remaining bootstrap gates include all service contexts and executable JAR startup with required dependencies. Database migrations, durable workflows, tenant isolation, provider sandbox journeys, and wallet/ledger correctness retain their own milestones and evidence.
+The transaction startup record tracks the first executable JAR check. Payment, fraud-detection, and notification service startup with their required dependencies also belong to B1. Database migrations, durable workflows, tenant isolation, provider sandbox journeys, and wallet/ledger correctness retain their own milestones and evidence. [Transaction startup evidence](2026-11-05-transaction-startup.md)
 
 ## Local CI policy
 
