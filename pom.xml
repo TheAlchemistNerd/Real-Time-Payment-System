@@ -58,6 +58,7 @@
         <module>payment-service</module>
         <module>fraud-detection-service</module>
         <module>notification-service</module>
+        <module>service-startup-tests</module>
     </modules>
 
     <dependencyManagement>

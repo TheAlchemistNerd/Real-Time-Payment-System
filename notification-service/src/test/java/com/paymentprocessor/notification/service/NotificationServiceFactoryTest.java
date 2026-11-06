@@ -2,38 +2,29 @@ package com.paymentprocessor.notification.service;
 
 import com.paymentprocessor.common.model.NotificationType;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 
-@ExtendWith(MockitoExtension.class)
 class NotificationServiceFactoryTest {
 
-    @Mock
-    private SmtpEmailService smtpEmailService;
-
-    @Mock
-    private SendGridEmailService sendGridEmailService;
-
-    @Mock
-    private SMSNotificationService smsService;
-
-    @Mock
-    private WebhookNotificationService webhookService;
-
-    @Mock
-    private NotificationService unknownService;
+    private final SmtpEmailService smtpEmailService = new SmtpEmailService(mock(JavaMailSender.class));
+    private final SendGridEmailService sendGridEmailService = new SendGridEmailService("test-key", "test@example.com");
+    private final SMSNotificationService smsService = new SMSNotificationService();
+    private final WebhookNotificationService webhookService = new WebhookNotificationService(WebClient.builder());
 
     @Test
     void routesEmailToTheConfiguredSmtpService() {
-        var factory = new NotificationServiceFactory(List.of(smtpEmailService, smsService, webhookService));
+        var proxiedSmtp = (NotificationService) new ProxyFactory(smtpEmailService).getProxy();
+        var factory = new NotificationServiceFactory(List.of(proxiedSmtp, smsService, webhookService));
 
-        assertThat(factory.getNotificationService(NotificationType.EMAIL)).isSameAs(smtpEmailService);
+        assertThat(factory.getNotificationService(NotificationType.EMAIL)).isSameAs(proxiedSmtp);
     }
 
     @Test
@@ -61,13 +52,14 @@ class NotificationServiceFactoryTest {
     void rejectsAmbiguousEmailProviderRegistration() {
         assertThatThrownBy(() -> new NotificationServiceFactory(List.of(smtpEmailService, sendGridEmailService)))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("Duplicate key EMAIL");
+                .hasMessageContaining("Multiple notification services for EMAIL");
     }
 
     @Test
     void rejectsAnAdapterWhoseChannelIsUnknown() {
-        assertThatThrownBy(() -> new NotificationServiceFactory(List.of(unknownService)))
+        var undeclared = mock(NotificationService.class);
+        assertThatThrownBy(() -> new NotificationServiceFactory(List.of(undeclared)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Unknown notification service type");
+                .hasMessageContaining("must declare its channel");
     }
 }

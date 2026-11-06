@@ -17,7 +17,7 @@ public interface TransactionReadModelRepository extends JpaRepository <Transacti
     List<TransactionReadModel> findByUserId(String userId);
     Page<TransactionReadModel> findByUserIdOrderByCreatedAtDesc(String userId, Pageable pageable);
 
-    @Query("SELECT T FROM TransactionReadModel t WHERE t.createdAt BETWEEN :startDate AND :endDate")
+    @Query("SELECT t FROM TransactionReadModel t WHERE t.createdAt BETWEEN :startDate AND :endDate")
     List<TransactionReadModel> findByDateRange(
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate

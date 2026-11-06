@@ -1,5 +1,6 @@
 package com.paymentprocessor.notification.service;
 
+import com.paymentprocessor.common.model.NotificationType;
 import com.paymentprocessor.notification.model.NotificationMessage;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.micrometer.core.annotation.Counted;
@@ -22,6 +23,11 @@ public class SmtpEmailService implements NotificationService {
 
     public SmtpEmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
+    }
+
+    @Override
+    public NotificationType channel() {
+        return NotificationType.EMAIL;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.paymentprocessor.notification.service;
 
+import com.paymentprocessor.common.model.NotificationType;
 import com.paymentprocessor.notification.model.NotificationMessage;
 import com.paymentprocessor.notification.model.WebhookPayload;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -28,6 +29,11 @@ public class WebhookNotificationService implements NotificationService {
         this.webClient = webClientBuilder
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
+    }
+
+    @Override
+    public NotificationType channel() {
+        return NotificationType.WEBHOOK;
     }
 
     @Override

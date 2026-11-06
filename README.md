@@ -4,11 +4,9 @@
 
 This Java/Spring repository is being developed into a platform for multi-merchant payment orchestration, wallets, balances, and transfers. A single-business installation uses the same architecture with one tenant.
 
-**The B1.1 build milestone passed on 5 November 2026.** A clean local run passed 37 unit tests and eight integration tests. All four service JARs passed packaging inspection. [B1.1 evidence record](docs/development/2026-11-04-b1-1-evidence.md)
+**B1 build and startup passed on 5 November 2026.** A clean local build passed all 51 tests (37 unit and 14 integration). All four packaged services started separately with their test dependencies. The transaction service accepted an HTTP request and published its matching command to Kafka. [B1 startup evidence](docs/development/2026-11-05-b1-service-startup.md)
 
-The packaged transaction service passed its startup check. It reported ready, accepted a payment request over HTTP, and published a command to Kafka with the transaction ID returned to the caller. Payment, fraud, and notification startup remain open as we assemble the local stack. [Transaction startup evidence](docs/development/2026-11-05-transaction-startup.md)
-
-**Stage 2 is underway.** The payment service now owns a versioned PostgreSQL schema. Local verification passed all 47 tests, including fresh initialization and retention of event history and payment details across a restart of the persistence configuration. [Payment database evidence](docs/development/2026-11-05-payment-database.md)
+The B2 payment database migration is in place. The next B2 gate is to bring up the services and infrastructure together from a fresh local environment using Compose. [Payment database evidence](docs/development/2026-11-05-payment-database.md)
 
 Start with the [build and test guide](docs/development/build-and-test.md). The [19 October review](docs/reviews/2026-10-19/README.md) records findings at commit `6bbe4ef`; the [remediation plan](docs/reviews/2026-10-19/remediation-plan.md) defines the ordered work and acceptance gates. Preserve that review as a historical snapshot and use current milestone evidence to assess subsequent changes. The architecture discussion below describes the intended design; the review identifies where implementation and evidence remain incomplete.
 
@@ -192,7 +190,7 @@ From here, you can view the available endpoints and execute API requests to crea
 
 ### Comprehensive Testing Plan
 
-Behavioural repairs begin with a reproduced failing test. The [build and test guide](docs/development/build-and-test.md) defines the runnable unit and integration phases. The [evidence record](docs/development/2026-11-04-b1-1-evidence.md) reports their results. The [remediation plan](docs/reviews/2026-10-19/remediation-plan.md) defines the remaining service startup, provider contract, recovery, and complete journey tests.
+Behavioural repairs begin with a reproduced failing test. The build guide explains how to run unit, integration, and packaged startup checks. Upcoming milestones cover the assembled local stack, provider contracts, recovery, and complete payment journeys. [Build and test guide](docs/development/build-and-test.md) · [B1 startup results](docs/development/2026-11-05-b1-service-startup.md) · [Remediation plan](docs/reviews/2026-10-19/remediation-plan.md)
 
 ### CI/CD and Branching Strategy
 

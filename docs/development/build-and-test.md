@@ -1,8 +1,8 @@
 # Build and test
 
-Updated 5 November 2026. This guide covers the reproducible build, unit and integration tests, and the packaged transaction-service startup check. [B1 build and bootstrap plan](../reviews/2026-10-19/remediation-plan.md#ordered-work-packages-and-acceptance-gates)
+Updated 5 November 2026. This guide covers the reproducible build, unit and integration tests, and local startup checks for the four packaged services. [B1 build and bootstrap plan](../reviews/2026-10-19/remediation-plan.md#ordered-work-packages-and-acceptance-gates)
 
-Run the full suite locally with JDK 21, the Maven wrapper, and a working Linux container engine. The B1.1 build passed 37 unit tests and eight integration tests before the Kafka test was extended to launch the executable JAR. The startup record tracks verification of that change. [B1.1 results](2026-11-04-b1-1-evidence.md) · [Transaction startup evidence](2026-11-05-transaction-startup.md) · [19 October compilation baseline](../reviews/2026-10-19/README.md#executed-checks)
+Run the full suite locally with JDK 21, the Maven wrapper, and a working Linux container engine. On 5 November, run 25 passed all 37 unit and 14 integration tests, including startup of each packaged service with local fixtures. Maven exited 0 across all seven reactor entries. [B1 startup evidence](2026-11-05-b1-service-startup.md)
 
 ## Toolchain
 
@@ -48,7 +48,7 @@ The array form passes each Maven option explicitly, including properties beginni
 
 ## Lifecycle and test selection
 
-Run commands from the repository root so Maven can build the parent and all five child modules: `common`, `transaction-service`, `payment-service`, `fraud-detection-service`, and `notification-service`.
+Run commands from the repository root. The full reactor builds the parent, the shared `common` module, the four application modules, and `service-startup-tests`.
 
 | Maven arguments passed to the Windows helper | Work performed | Infrastructure |
 | --- | --- | --- |
@@ -89,6 +89,14 @@ To exercise just the packaged transaction service and its broker, start Docker a
 
 On Linux/macOS, use `./mvnw -B -ntp -pl transaction-service -am -Dit.test=TransactionKafkaIT -Dfailsafe.failIfNoSpecifiedTests=false clean verify`. This builds the transaction service and its dependencies, runs their unit tests, packages the JAR, then selects its Kafka integration test. Failsafe passes the path of that JAR to the test. Inspect the `TransactionKafkaIT` report in `transaction-service/target/failsafe-reports/` for its result and the adjacent `packaged-transaction.log` for child-process output.
 
+For the packaged payment, fraud-detection, and notification checks, use the startup test module and build its dependencies in the same reactor.
+
+```powershell
+.\scripts\Test-Backend.ps1 -MavenArguments @('-B', '-ntp', '-pl', 'service-startup-tests', '-am', '-Dit.test=PackagedServicesIT', '-Dfailsafe.failIfNoSpecifiedTests=false', 'verify')
+```
+
+On Linux/macOS, use `./mvnw -B -ntp -pl service-startup-tests -am -Dit.test=PackagedServicesIT -Dfailsafe.failIfNoSpecifiedTests=false verify`. Each JAR starts in its own JVM with loopback HTTP and a real Kafka broker. Payment also uses fresh PostgreSQL, fraud detection uses a local provider address, and notification uses local SMTP. The tests check readiness, an application endpoint, and assigned Kafka topics for each service. A fourth case inspects the default notification port inside its JAR. Each child process writes a named log in `service-startup-tests/target/failsafe-reports/`. Transaction startup remains in `TransactionKafkaIT`. A full reactor `clean verify` includes both classes. [Packaged startup evidence](2026-11-05-b1-service-startup.md)
+
 ### Implemented integration-test scope
 
 The current integration classes exercise these boundaries. Consult the dated evidence record for completed results and commands that select only part of the suite.
@@ -99,6 +107,7 @@ The current integration classes exercise these boundaries. Consult the dated evi
 | [TransactionKafkaIT](../../transaction-service/src/test/java/com/paymentprocessor/transaction/TransactionKafkaIT.java) | Launches the executable transaction JAR, waits for HTTP readiness, and submits a creation request. A consumer checks the returned transaction ID against the Kafka record key and JSON command on a real broker (`confluentinc/cp-kafka:7.6.1`). | Covers the public intake API through broker publication. Payment execution, durable intake, and restart recovery have separate acceptance criteria. |
 | [PaymentEventStoreIT](../../payment-service/src/test/java/com/paymentprocessor/payment/PaymentEventStoreIT.java) | Boots the payment persistence configuration on fresh PostgreSQL 16.6. Exercises the production migration, Hibernate mapping, JDBC event persistence and replay, rollback, version conflicts, restart preservation and protection of pre-existing payment records. | Covers the database boundary. The assembled payment service and Kafka consumers have separate startup checks. |
 | [SmtpEmailServiceIT](../../notification-service/src/test/java/com/paymentprocessor/notification/service/SmtpEmailServiceIT.java) | GreenMail on an ephemeral loopback port; SMTP submission and received sender, recipient, subject, and body. | Actual local SMTP transport; external provider delivery, Spring notification-service startup, and durable retry behaviour require separate checks. |
+| [PackagedServicesIT](../../service-startup-tests/src/test/java/com/paymentprocessor/startup/PackagedServicesIT.java) | Starts the payment, fraud-detection, and notification JARs separately with local fixtures. Checks their HTTP responses and Kafka assignments. | Covers each application's startup, HTTP surface, and listener wiring. Cross-service payment processing belongs to journey tests. |
 
 The event-store cases cover creation and replay, database rollback, and expected-version conflicts on missing and existing histories. Concurrent writers, reusing the same aggregate after rollback, and publishing committed events to Kafka need separate tests. The Kafka integration test gives its admin and consumer clients a 10-second request timeout within a 20-second operation timeout. These limits apply only to the test.
 
@@ -111,7 +120,7 @@ docker version
 docker info
 ```
 
-For Docker Desktop installations using WSL 2, also inspect `wsl --status` after restarts or backend repairs. `PaymentEventStoreIT` and `TransactionKafkaIT` require a working container runtime and access to their pinned images. Testcontainers starts and waits for those dependencies. `TransactionHttpIT` uses mocked Kafka, and `SmtpEmailServiceIT` starts a local mail server; these focused checks can execute independently of Docker. Full `verify` includes all four integration classes.
+For Docker Desktop installations using WSL 2, also inspect `wsl --status` after restarts or backend repairs. `PaymentEventStoreIT`, `TransactionKafkaIT`, and `PackagedServicesIT` require a working container runtime and access to their pinned images. Testcontainers starts and waits for those dependencies. `TransactionHttpIT` uses mocked Kafka, and `SmtpEmailServiceIT` starts a local mail server. These two focused checks can run independently of Docker. Full `verify` includes all five integration classes.
 
 Testcontainers-managed dependencies are provisioned by the tests through Docker. Local Compose and these test-owned containers have separate configuration and lifecycles. Record container images, relevant configuration, and dependency failures with integration-run evidence. If infrastructure is unavailable, record that result and continue the independent unit checks; keep integration acceptance pending.
 
@@ -155,7 +164,7 @@ Local `logs/`, `target/`, and `*.log` files are ignored by Git. Preserve selecte
 - per-module test counts and any skipped or excluded scope;
 - reproduced failure, implemented repair, completed verification, and remaining acceptance criteria.
 
-The transaction startup record tracks the first executable JAR check. Payment, fraud-detection, and notification service startup with their required dependencies also belong to B1. Database migrations, durable workflows, tenant isolation, provider sandbox journeys, and wallet/ledger correctness retain their own milestones and evidence. [Transaction startup evidence](2026-11-05-transaction-startup.md)
+B1 is complete. B2 has a verified payment schema migration. Starting the assembled stack from a fresh environment through Compose remains open. Durable workflows, tenant isolation, provider journeys, and wallet and ledger correctness have separate acceptance criteria. [B1 startup evidence](2026-11-05-b1-service-startup.md) · [Payment database evidence](2026-11-05-payment-database.md)
 
 ## Local CI policy
 

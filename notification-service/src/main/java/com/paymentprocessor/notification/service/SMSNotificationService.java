@@ -1,5 +1,6 @@
 package com.paymentprocessor.notification.service;
 
+import com.paymentprocessor.common.model.NotificationType;
 import com.paymentprocessor.notification.model.NotificationMessage;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.micrometer.core.annotation.Counted;
@@ -13,6 +14,11 @@ import java.util.concurrent.CompletableFuture;
 @Service
 @Slf4j
 public class SMSNotificationService implements NotificationService {
+
+    @Override
+    public NotificationType channel() {
+        return NotificationType.SMS;
+    }
 
     @Override
     @Async("NotificationExecutor")

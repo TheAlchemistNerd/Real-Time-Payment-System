@@ -1,5 +1,6 @@
 package com.paymentprocessor.notification.service;
 
+import com.paymentprocessor.common.model.NotificationType;
 import com.paymentprocessor.notification.model.NotificationMessage;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.micrometer.core.annotation.Counted;
@@ -24,6 +25,11 @@ public class SendGridEmailService implements NotificationService {
                                 @Value("${notification.email.providers.sendgrid.from-email}") String fromEmail) {
         this.sendGridApiKey = sendGridApiKey;
         this.fromEmail = fromEmail;
+    }
+
+    @Override
+    public NotificationType channel() {
+        return NotificationType.EMAIL;
     }
 
     @Override
