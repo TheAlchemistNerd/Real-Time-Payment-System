@@ -1,13 +1,14 @@
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:21.0.13_9-jre-jammy
 
+ARG APP_VERSION=1.0.0
+RUN command -v curl && groupadd --gid 10001 payment && useradd --uid 10001 --gid payment --no-create-home payment
 WORKDIR /app
-
-COPY target/payment-service-*.jar app.jar
-
+COPY --chown=10001:10001 payment-service/target/payment-service-${APP_VERSION}.jar app.jar
+USER 10001:10001
+ENV SERVER_PORT=8081 \
+    MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true \
+    JAVA_TOOL_OPTIONS="-Xms64m -Xmx256m -XX:+ExitOnOutOfMemoryError"
 EXPOSE 8081
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:8081/api/v1/payments/health || exit 1
+HEALTHCHECK --interval=10s --timeout=5s --start-period=240s --retries=12 \
+    CMD curl --fail --silent --max-time 4 "http://127.0.0.1:${SERVER_PORT}/actuator/health/readiness" || exit 1
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

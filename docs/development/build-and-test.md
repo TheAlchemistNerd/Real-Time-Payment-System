@@ -1,8 +1,8 @@
 # Build and test
 
-Updated 5 November 2026. This guide covers the reproducible build, unit and integration tests, and local startup checks for the four packaged services. [B1 build and bootstrap plan](../reviews/2026-10-19/remediation-plan.md#ordered-work-packages-and-acceptance-gates)
+Updated 6 November 2026. This guide covers the reproducible build, unit and integration tests, packaged service startup, and the additional Compose checks. [Build and bootstrap plan](../reviews/2026-10-19/remediation-plan.md#ordered-work-packages-and-acceptance-gates)
 
-Run the full suite locally with JDK 21, the Maven wrapper, and a working Linux container engine. On 5 November, run 25 passed all 37 unit and 14 integration tests, including startup of each packaged service with local fixtures. Maven exited 0 across all seven reactor entries. [B1 startup evidence](2026-11-05-b1-service-startup.md)
+Run the full suite locally with JDK 21, the Maven wrapper, and a working Linux container engine. B1 passed on 5 November. Full Maven run 29 passed all 51 tests with exit 0 on 6 November. B2's assembled stack acceptance remains open. [B1 startup evidence](2026-11-05-b1-service-startup.md) · [B2 evidence](2026-11-06-b2-local-stack.md)
 
 ## Toolchain
 
@@ -126,19 +126,17 @@ Testcontainers-managed dependencies are provisioned by the tests through Docker.
 
 ## Compose scope
 
-The current `docker-compose.yml` defines infrastructure only:
+The eight Compose services are the transaction, payment, fraud-detection, and notification applications, plus PostgreSQL, Kafka, Mailpit, and a local fraud-provider fixture. Build the JARs through Maven before building the application images. The local stack guide covers first setup with `.env.example`, image versions, ports, and local data persistence. [Local stack guide](local-stack.md)
 
-- Kafka and ZooKeeper;
-- PostgreSQL and Redis;
-- Prometheus and Grafana.
-
-Inspect the list with:
+The stack checks run separately from Maven in a visible PowerShell session.
 
 ```powershell
-docker compose config --services
+.\scripts\Test-LocalStack.ps1 -Run local
 ```
 
-The file references `DB_USER`, `DB_PASSWORD`, and `GRAFANA_ADMIN_PASSWORD`, plus local database initialization and Prometheus configuration paths. Supply local values through the environment or the ignored `.env` file when working on that stack. B2 owns the complete configuration, readiness checks, and reproducible fresh startup. Application services have their own startup and configuration work; a Compose configuration parse establishes only that the file can be interpreted.
+The helper creates an isolated PostgreSQL 16 Compose project with local credentials and dynamically allocated ports. It checks service health, broker assignments, real intake persistence, a separate payment-query fixture, and data preservation after restart and container recreation. Evidence is saved under `logs/validation/rtps-test-.../`.
+
+Maven run 29 and stack run 32 passed. B2 is complete for the PostgreSQL 16 development stack. On 7 November the owner confirmed that legacy upgrades should be deferred because the project has no production deployment. The uncompleted PostgreSQL 15 rehearsal was cancelled. [B2 evidence](2026-11-06-b2-local-stack.md)
 
 ## Visible output and evidence
 
@@ -164,8 +162,8 @@ Local `logs/`, `target/`, and `*.log` files are ignored by Git. Preserve selecte
 - per-module test counts and any skipped or excluded scope;
 - reproduced failure, implemented repair, completed verification, and remaining acceptance criteria.
 
-B1 is complete. B2 has a verified payment schema migration. Starting the assembled stack from a fresh environment through Compose remains open. Durable workflows, tenant isolation, provider journeys, and wallet and ledger correctness have separate acceptance criteria. [B1 startup evidence](2026-11-05-b1-service-startup.md) · [Payment database evidence](2026-11-05-payment-database.md)
+B1 and the agreed B2 development scope are complete. B3 will establish controlled payment journeys. Durable workflows, tenant isolation, and wallet and ledger correctness have subsequent acceptance criteria. [B1 startup evidence](2026-11-05-b1-service-startup.md) · [Payment database evidence](2026-11-05-payment-database.md)
 
 ## Local CI policy
 
-Run the repository's configured verification before each milestone commit and push, preserving exact commands, exit codes, and missing prerequisites. Keep GitHub Actions CI disabled unless explicitly requested by the owner. A disabled hosted workflow provides no test result. This repository currently configures compilation, toolchain enforcement, unit tests, packaging, and integration tests in Maven; separate lint, dependency-security, system, and end-to-end journey gates remain implementation work. Follow the current milestone's acceptance criteria rather than inferring those checks from a successful Maven command.
+Run the repository's configured verification before each milestone commit and push, preserving exact commands, exit codes, and missing prerequisites. Keep GitHub Actions CI disabled unless explicitly requested by the owner. Maven checks compilation, toolchain enforcement, unit tests, packaging, and integration boundaries including packaged startup. The separate stack script checks assembled services and database preservation. Lint, dependency-security, and complete journey gates remain implementation work. Follow the current milestone's acceptance criteria.

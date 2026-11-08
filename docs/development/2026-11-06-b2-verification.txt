@@ -1,0 +1,128 @@
+B2 local verification evidence
+Maven run 29
+
+Source base commit = a28f510
+Build branch at run = main
+Delivery branch = codex/local-compose-stack
+Source scope = working-tree implementation based on the commit above
+Command = scripts/Test-Backend.ps1 -B -ntp -fae clean verify
+Started UTC = 2026-11-06T11:21:36.4970980+00:00
+Finished UTC = 2026-11-06T11:28:40.8017080+00:00
+Exit code = 0
+Result marker = logs/validation/29-b2-backend.json
+Build log = logs/validation/29-b2-backend.log
+
+Measured test JVM properties from all 11 XML reports
+java.vendor = Eclipse Adoptium
+java.version = 21.0.10
+java.runtime.name = OpenJDK Runtime Environment
+java.runtime.version = 21.0.10+7-LTS
+
+Configured wrapper values from .mvn/wrapper/maven-wrapper.properties
+wrapperVersion = 3.3.2
+Maven distribution version = 3.9.9
+These wrapper values describe repository configuration. The JVM values above
+were recorded by the executed test processes.
+
+Reports from module target/surefire-reports and target/failsafe-reports
+Class | Runner | Tests | Failures | Errors | Skipped
+com.paymentprocessor.transaction.service.TransactionServiceTest | Surefire | 1 | 0 | 0 | 0
+com.paymentprocessor.transaction.TransactionHttpIT | Failsafe | 2 | 0 | 0 | 0
+com.paymentprocessor.transaction.TransactionKafkaIT | Failsafe | 1 | 0 | 0 | 0
+com.paymentprocessor.payment.aggregate.TransactionAggregateTest | Surefire | 13 | 0 | 0 | 0
+com.paymentprocessor.payment.PaymentEventStoreIT | Failsafe | 6 | 0 | 0 | 0
+com.paymentprocessor.fraud.service.FraudDetectionServiceTest | Surefire | 9 | 0 | 0 | 0
+com.paymentprocessor.notification.service.NotificationOrchestratorTest | Surefire | 6 | 0 | 0 | 0
+com.paymentprocessor.notification.service.NotificationServiceFactoryTest | Surefire | 6 | 0 | 0 | 0
+com.paymentprocessor.notification.service.SmtpEmailServiceTest | Surefire | 2 | 0 | 0 | 0
+com.paymentprocessor.notification.service.SmtpEmailServiceIT | Failsafe | 1 | 0 | 0 | 0
+com.paymentprocessor.startup.PackagedServicesIT | Failsafe | 4 | 0 | 0 | 0
+Unit total | Surefire | 37 | 0 | 0 | 0
+Integration and packaged startup total | Failsafe | 14 | 0 | 0 | 0
+Total | All | 51 | 0 | 0 | 0
+
+All 11 XML reports were written within the recorded run interval.
+First XML write UTC = 2026-11-06T11:22:25.3366496Z
+Last XML write UTC = 2026-11-06T11:28:39.1908529Z
+
+Reactor results read from the build log
+Real-Time Payment Processing System = SUCCESS
+common = SUCCESS
+transaction-service = SUCCESS
+payment-service = SUCCESS
+fraud-detection-service = SUCCESS
+notification-service = SUCCESS
+service-startup-tests = SUCCESS
+Overall = BUILD SUCCESS
+
+Packaged application artifacts used as Compose image build inputs
+All four files were written within the run interval. SHA-256 was calculated
+from the current packaged JAR bytes after the run.
+
+transaction-service/target/transaction-service-1.0.0.jar
+SHA256 = 5FD64CEC9A6D9A03AE3F09EC532AF8375C71A2DEED8CD64E0664A3C74BEF0FE1
+Bytes = 48666505
+Written UTC = 2026-11-06T11:22:29.0116236Z
+
+payment-service/target/payment-service-1.0.0.jar
+SHA256 = 54164C5B47A1C0FDEF472441C84F70EA197CF542B8CC82BC9B12F5C530E50E6E
+Bytes = 74877724
+Written UTC = 2026-11-06T11:24:33.8396548Z
+
+fraud-detection-service/target/fraud-detection-service-1.0.0.jar
+SHA256 = B6C2FA101D9CBFF97FD37DF70C69A1D41A3C97B6AEF6C06CBD90920B9B0CE576
+Bytes = 50902597
+Written UTC = 2026-11-06T11:25:37.8694415Z
+
+notification-service/target/notification-service-1.0.0.jar
+SHA256 = 4F882EF95C53C0852F143F1EBBAEEBAEA34BBF802C81CB4DA17275CE6C1E1BEE
+Bytes = 51891871
+Written UTC = 2026-11-06T11:26:01.4210256Z
+
+The preceding section covers Maven verification and its packaged outputs.
+The following sections record the separate Compose verification runs.
+
+Compose normal run 32
+Command = scripts/Test-LocalStack.ps1 -Run 32-b2-stack
+Health, nine active Kafka topic/group assignments, empty schema, HTTP 202 intake,
+event payload, separate SQL query fixture, restart, recreation, and cleanup passed.
+Liquibase history = 001-payment-schema:9:f1efc124a515ff0dd1105acd4c0c0d95
+{
+    "run":  "32-b2-stack",
+    "project":  "rtps-test-32-b2-stack-eafd4dc8db",
+    "exitCode":  0,
+    "started":  "2026-11-06T20:32:57.8177533+00:00",
+    "finished":  "2026-11-06T20:57:38.9667150+00:00",
+    "observations":  {
+                         "freshStartup":  "All four applications UP; expected Kafka assignments present",
+                         "sourcePostgresVersion":  "16.6",
+                         "intake":  "TX-a6076c8a-d2a4-45a5-86de-23ae5f50ac17",
+                         "queryFixture":  "Explicit SQL fixture verified independently through the payment summary",
+                         "restart":  "Event, read model and migration checksum retained",
+                         "recreation":  "Containers recreated using retained volumes; data and migration checksum retained"
+                     }
+}
+
+Image identities observed before cleanup
+[{"ID":"sha256:18375a1842987d472d701038f361a28390099dfc2e6b7f84d548cc74218d48c3","ContainerName":"rtps-test-32-b2-stack-eafd4dc8db-notification-service-1","Repository":"rtps-test-32-b2-stack-eafd4dc8db-notification-service","Tag":"latest","Platform":"linux/amd64","Size":146579185,"Created":"2026-11-06T11:37:27.425005455Z","LastTagTime":"2026-11-06T20:35:44.700483764Z"},{"ID":"sha256:082519e0be90ae8e69b818e2ffcc6d1713aa540199e98fcf289520912a0c44ca","ContainerName":"rtps-test-32-b2-stack-eafd4dc8db-fraud-detection-service-1","Repository":"rtps-test-32-b2-stack-eafd4dc8db-fraud-detection-service","Tag":"latest","Platform":"linux/amd64","Size":145676290,"Created":"2026-11-06T11:37:26.739548364Z","LastTagTime":"2026-11-06T20:35:40.366989879Z"},{"ID":"sha256:620734d9fc0bb1f9886932e5baf33806074469f40e3fe246a3fdbb59309535fa","ContainerName":"rtps-test-32-b2-stack-eafd4dc8db-kafka-1","Repository":"confluentinc/cp-kafka","Tag":"7.6.1","Platform":"linux/amd64","Size":452803905,"Created":"2024-04-03T11:37:10.849643425Z","LastTagTime":"2026-11-04T21:35:18.180125049Z"},{"ID":"sha256:0375afdd45d3072fe63475b2f8f7344ec0e195a12bc336c35360c8f07cacd5fd","ContainerName":"rtps-test-32-b2-stack-eafd4dc8db-transaction-service-1","Repository":"rtps-test-32-b2-stack-eafd4dc8db-transaction-service","Tag":"latest","Platform":"linux/amd64","Size":144038483,"Created":"2026-11-06T11:37:25.637703903Z","LastTagTime":"2026-11-06T20:35:33.263172712Z"},{"ID":"sha256:1d04b9ba1d4996401f2552b51beda8187f175c0645c091e4781134fc9c9a3eef","ContainerName":"rtps-test-32-b2-stack-eafd4dc8db-postgres-1","Repository":"postgres","Tag":"16.6-alpine","Platform":"linux/amd64","Size":109505957,"Created":"2025-02-04T00:55:44Z","LastTagTime":"2026-11-04T21:35:44.835942109Z"},{"ID":"sha256:09470f33cf6d92ac4cd8a6bbfe89f1e0c320732e01cef19dd7c83f430588dfe1","ContainerName":"rtps-test-32-b2-stack-eafd4dc8db-fraud-stub-1","Repository":"rtps-test-32-b2-stack-eafd4dc8db-fraud-stub","Tag":"latest","Platform":"linux/amd64","Size":17777342,"Created":"2026-11-06T11:33:00.928605418Z","LastTagTime":"2026-11-06T20:33:16.50661835Z"},{"ID":"sha256:721ef22aeb7e96a28dadbeda7210e7ce39ec4c0278288e084a84465b1cd9d7fc","ContainerName":"rtps-test-32-b2-stack-eafd4dc8db-payment-service-1","Repository":"rtps-test-32-b2-stack-eafd4dc8db-payment-service","Tag":"latest","Platform":"linux/amd64","Size":167174546,"Created":"2026-11-06T11:37:31.393542447Z","LastTagTime":"2026-11-06T20:36:03.597215618Z"},{"ID":"sha256:762dd66a062738309e43ad8efce733e8db4a73bf6a38e369aeb547aecb897d27","ContainerName":"rtps-test-32-b2-stack-eafd4dc8db-mailpit-1","Repository":"axllent/mailpit","Tag":"v1.20.3","Platform":"linux/amd64","Size":12050132,"Created":"2024-09-01T07:59:32.413295992Z","LastTagTime":"2026-11-06T11:29:22.592891297Z"}]
+
+
+
+Scope decision and cancellation
+{
+  "run": "33-b2-upgrade",
+  "status": "cancelled",
+  "reason": "User confirmed this is a development project and deferred legacy PostgreSQL upgrade support",
+  "cancelledAt": "2026-11-06T21:05:42.1597026+00:00",
+  "cleanupExitCode": 0
+}
+
+The project is in development. Legacy upgrade support is deferred.
+The shipped helper retains the verified PostgreSQL 16 path.
+
+Final file checks after removing the provisional upgrade path
+{
+    "command":  "PowerShell/Python syntax, git diff --check, documentation file links",
+    "exitCode":  0,
+    "finished":  "2026-11-06T21:08:34.3304581+00:00"
+}

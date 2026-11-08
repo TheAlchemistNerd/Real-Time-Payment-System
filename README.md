@@ -6,7 +6,7 @@ This Java/Spring repository is being developed into a platform for multi-merchan
 
 **B1 build and startup passed on 5 November 2026.** A clean local build passed all 51 tests (37 unit and 14 integration). All four packaged services started separately with their test dependencies. The transaction service accepted an HTTP request and published its matching command to Kafka. [B1 startup evidence](docs/development/2026-11-05-b1-service-startup.md)
 
-The B2 payment database migration is in place. The next B2 gate is to bring up the services and infrastructure together from a fresh local environment using Compose. [Payment database evidence](docs/development/2026-11-05-payment-database.md)
+**B2 development stack passed.** The PostgreSQL 16 Compose stack passed startup, HTTP-to-Kafka-to-PostgreSQL intake, application restart, and container recreation checks. Legacy database upgrades are deferred; this project has no production deployment to migrate. Next is B3's controlled payment journeys. [Local stack guide](docs/development/local-stack.md) · [B2 evidence](docs/development/2026-11-06-b2-local-stack.md)
 
 Start with the [build and test guide](docs/development/build-and-test.md). The [19 October review](docs/reviews/2026-10-19/README.md) records findings at commit `6bbe4ef`; the [remediation plan](docs/reviews/2026-10-19/remediation-plan.md) defines the ordered work and acceptance gates. Preserve that review as a historical snapshot and use current milestone evidence to assess subsequent changes. The architecture discussion below describes the intended design; the review identifies where implementation and evidence remain incomplete.
 
@@ -140,7 +140,7 @@ Use the repository wrapper from the repository root. On Windows, [scripts/Test-B
 *   JDK 21, with `JAVA_HOME` and `PATH` selecting that JDK.
 *   Git and network access for the initial Maven/dependency downloads.
 *   Maven 3.9.9 is selected by Maven Wrapper 3.3.2 in `only-script` mode with a pinned distribution SHA-256; a global Maven installation is optional.
-*   A working Docker engine with Linux containers is required for the full integration suite. Docker Compose is used for the separate local infrastructure stack.
+*   A working Docker engine with Linux containers is required for the full integration suite. Docker Compose with support for `up --wait` runs the assembled local stack.
 
 ### Build and Test
 
@@ -170,13 +170,14 @@ Integration tests cover transaction request validation, HTTP intake through the 
 
 ### Local Infrastructure
 
-`docker-compose.yml` declares Kafka, ZooKeeper, PostgreSQL, Redis, Prometheus, and Grafana. Application services are started separately; a reproducible assembled application stack belongs to the bootstrap and local-stack milestones. Compose configuration also references database initialization and monitoring files covered by that remediation.
+`docker-compose.yml` defines the four application services, PostgreSQL 16.6, Kafka 7.6.1, Mailpit, and a local fraud-provider fixture. The application images use the JARs from the Maven build. Copy `.env.example` to `.env` on first setup and choose a local database password before starting Compose.
 
 ```powershell
 docker compose config --services
+docker compose up --build --detach --wait --wait-timeout 600
 ```
 
-This command inspects the configured service list. Container readiness and application startup require their own executed checks. Integration tests that provision Testcontainers dependencies use Docker directly; the test guide records their requirements separately from Compose.
+The local stack guide documents ports, development fixtures, stopping and restarting, and the automated stack check. [Local stack guide](docs/development/local-stack.md) · [B2 evidence](docs/development/2026-11-06-b2-local-stack.md)
 
 ## API Documentation
 
@@ -194,7 +195,7 @@ Behavioural repairs begin with a reproduced failing test. The build guide explai
 
 ### CI/CD and Branching Strategy
 
-*   **Local CI**: Run the repository's configured checks locally before each milestone commit and push. The backend entry point is `./mvnw -B -ntp clean verify` with JDK 21 and a working Docker engine, or the Windows helper above. GitHub Actions CI stays disabled unless the owner explicitly requests reactivation. Record failures and unavailable prerequisites; current Maven configuration has no separate lint, security-scan, system-test, or journey-test gate.
+*   **Local CI**: Run the repository's configured checks locally before each milestone commit and push. The backend entry point is `./mvnw -B -ntp clean verify` with JDK 21 and a working Docker engine, or the Windows helper above. The stack guide provides the additional B2 checks. GitHub Actions CI stays disabled unless the owner explicitly requests reactivation. Separate lint, dependency-security, and complete journey checks remain implementation work.
 *   **Deployment (decision pending)**: Select a staging target and operating budget with the owner, then validate deployment, rollback, recovery, and load against the agreed workload.
 *   **Branching**: Develop milestones on feature branches, commit and push after the required local checks, and verify the remote revision. Use the `codex/` prefix for new branches while preserving existing work branches. Keep the acceptance criteria for merging into `main` explicit.
 

@@ -1,0 +1,6 @@
+**
+!transaction-service/target/transaction-service-*.jar
+!payment-service/target/payment-service-*.jar
+!fraud-detection-service/target/fraud-detection-service-*.jar
+!notification-service/target/notification-service-*.jar
+!dev/fraud-stub/server.py

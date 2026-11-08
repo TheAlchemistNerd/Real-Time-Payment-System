@@ -1,58 +1,152 @@
-version: '3.8'
+# Local development stack. See docs/development/local-stack.md.
+x-application: &application
+  init: true
+  mem_limit: 512m
+  stop_grace_period: 30s
+  environment: &application-environment
+    SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED: "true"
+    LOGGING_LEVEL_ORG_APACHE_KAFKA: WARN
+  depends_on:
+    kafka:
+      condition: service_healthy
+
 services:
-  zookeeper:
-    image: confluentinc/cp-zookeeper:latest
+  postgres:
+    image: postgres:16.6-alpine
+    mem_limit: 256m
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    ports:
-      - "2181:2181"
+      POSTGRES_DB: ${DB_NAME:-payment_db}
+      POSTGRES_USER: ${DB_USERNAME:-payment_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    volumes:
+      - pg16_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   kafka:
-    image: confluentinc/cp-kafka:latest
-    depends_on:
-      - zookeeper
+    image: confluentinc/cp-kafka:7.6.1
+    mem_limit: 768m
     ports:
-      - "9092:9092"
+      - "127.0.0.1:${KAFKA_PORT:-9092}:9092"
     environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:${KAFKA_ADVERTISED_PORT:-9092}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_NUM_PARTITIONS: 1
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_LOG_SEGMENT_BYTES: 16777216
+      KAFKA_HEAP_OPTS: -Xms256m -Xmx512m
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      # The probe is a separate JVM; keep its heap below the broker's heap.
+      test: ["CMD-SHELL", "KAFKA_HEAP_OPTS='-Xms16m -Xmx64m' kafka-broker-api-versions --bootstrap-server kafka:29092 >/dev/null 2>&1"]
+      interval: 30s
+      timeout: 20s
+      start_period: 30s
+      retries: 18
 
-  postgres:
-    image: postgres:15-alpine
+  mailpit:
+    image: axllent/mailpit:v1.20.3
+    mem_limit: 128m
     environment:
-      POSTGRES_DB: payment_system
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      MP_SMTP_AUTH_ACCEPT_ANY: "true"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "true"
+      MP_SMTP_DISABLE_RDNS: "true"
     ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./init-scripts:/docker-entrypoint-initdb.d
+      - "127.0.0.1:${MAILPIT_PORT:-8025}:8025"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8025/"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
 
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
+  fraud-stub:
+    build:
+      context: .
+      dockerfile: dev/fraud-stub/Dockerfile
+    mem_limit: 64m
 
-  prometheus:
-    image: prom/prometheus:latest
+  transaction-service:
+    <<: *application
+    build:
+      context: .
+      dockerfile: transaction-service/Dockerfile
     ports:
-      - "9090:9090"
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - "127.0.0.1:${TRANSACTION_PORT:-8080}:8080"
 
-  grafana:
-    image: grafana/grafana:latest
+  payment-service:
+    <<: *application
+    build:
+      context: .
+      dockerfile: payment-service/Dockerfile
     ports:
-      - "3000:3000"
+      - "127.0.0.1:${PAYMENT_PORT:-8081}:8081"
     environment:
-      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
-    volumes:
-      - grafana_data:/var/lib/grafana
+      <<: *application-environment
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME:-payment_db}
+      DB_USERNAME: ${DB_USERNAME:-payment_user}
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  fraud-detection-service:
+    <<: *application
+    build:
+      context: .
+      dockerfile: fraud-detection-service/Dockerfile
+    ports:
+      - "127.0.0.1:${FRAUD_PORT:-8082}:8082"
+    environment:
+      <<: *application-environment
+      FRAUD_API_BASE_URL: http://fraud-stub:8080/
+      FRAUD_API_KEY: local-fixture
+    depends_on:
+      kafka:
+        condition: service_healthy
+      fraud-stub:
+        condition: service_healthy
+
+  notification-service:
+    <<: *application
+    build:
+      context: .
+      dockerfile: notification-service/Dockerfile
+    ports:
+      - "127.0.0.1:${NOTIFICATION_PORT:-8083}:8083"
+    environment:
+      <<: *application-environment
+      NOTIFICATION_EMAIL_PROVIDER: smtp
+      NOTIFICATION_EMAIL_PROVIDERS_SMTP_HOST: mailpit
+      NOTIFICATION_EMAIL_PROVIDERS_SMTP_PORT: 1025
+      NOTIFICATION_EMAIL_PROVIDERS_SMTP_USERNAME: local
+      NOTIFICATION_EMAIL_PROVIDERS_SMTP_PASSWORD: local
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_MAIL: INFO
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mailpit:
+        condition: service_healthy
+
 volumes:
-  postgres_data:
-  grafana_data:
+  # Development data survives container recreation.
+  pg16_data:
+  kafka_data:
